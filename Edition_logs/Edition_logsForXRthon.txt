@@ -1,0 +1,25 @@
+//What is "NVSFT"? --> New Version's System Format text
+BETA 0.0.1 _indev 2024*11*3 /NVSFT: B--0--0.1--_indev--2024*11*3 Version:
+    First,
+        print, input, import, quit,
+        Function completion setup.;
+        Logic functions such as variables have been built.
+    Second,
+        Command line functionality implemented
+    Third,
+        The installer (or more likely the downloader) function has been implemented,
+        but the installation function has not been implemented yet, but the download function is implemented,
+        and the download function is the code source file. Now there is only one file test1 available for download.
+BETA 0.0.1 _indev 2024*11*4 /NVSFT: B--0--0.1--_indev--2024*11*4 Version:
+    Added Decode and install package (unuse)
+B--0--0.1--_indev--2024*12*1 Version:
+    Added Editor
+    Added Builtin of function (print, input)
+B--0--0.1--_indev--2024*12*2 Version:
+    Updated Editor (For details, please go to the version log about the editor)
+B--0--0.1--_indev--2024*12*3 Version:
+    Updated Editor (For details, please go to the version log about the editor)
+    Adjusted how the Function "isBuiltins" is display
+    Corrected errors in the Edition logs
+B--0--0.2--_indev--2024*12*0 Version:
+    Used Git And GitHub

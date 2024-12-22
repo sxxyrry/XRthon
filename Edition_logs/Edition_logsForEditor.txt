@@ -1,0 +1,11 @@
+B--0--0.1--_indev--2024*12*1 Version:
+    Created
+B--0--0.1--_indev--2024*12*2 Version:
+    Fixed Bugs
+    Changed Edition Logs Interface
+    Changed About Us Interface
+    Added English for About and About Us
+    Removed Check Message
+    Added initialization directory in choose file
+B--0--0.1--_indev--2024*12*3 Version:
+    Adjusted file structure
