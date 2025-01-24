@@ -26,6 +26,8 @@ _indev标记：表达是否是正在开发版，可以不加
 
 import re
 
+from _del_ import del___pycache__
+
 
 class VersionSystem():
     def __init__(self):
@@ -56,10 +58,10 @@ _indev标记：表达是否是正在开发版，可以不加
     @staticmethod
     def CheckVersion(version: str) -> bool:
         # 定义正则表达式模式
-        pattern = r'^(O|B)--(\d+)--(\d+\.\d+)(--_indev)?--(\d{4})\*(\d{2})\*(\d+)$'
+        pattern = r'^(O|B)--(\d+)--(\d+\.\d+)(--_indev)?--(\d{4})\*(\d{1,2})\*(\d+)$' # (\d{2})怎么加上是一个数字的情况
         
         # 匹配版本字符串
-        match = re.match(pattern, version)
+        match: re.Match[str] | None = re.fullmatch(pattern, version)
         if match is None:
             return False
         
@@ -119,6 +121,8 @@ _indev标记：表达是否是正在开发版，可以不加
             return f'{major_version}.{version_number}{' _indev' if indev else ''} {year}*{month}*{revision}'
         else:
             raise ValueError('Invalid version format')
+
+del___pycache__()
 
 if __name__ == '__main__':
     print(VersionSystem.GetRules())

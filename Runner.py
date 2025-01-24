@@ -1,10 +1,13 @@
-import os
+import os 
 from folder import folder
 from types import NoneType
 from typing import Any, TypedDict
 from versions import GetVersionForXRthon
-from Edition_logs import Edition_logsForXRthon
+from Edition_logs import English_Edition_logsForXRthon
+from _del_ import del___pycache__
 
+
+KernelName = 'XRXTR'
 
 version = GetVersionForXRthon()
 
@@ -135,6 +138,7 @@ class Raiser():
             print(f'Python Level Errors:')
             print(f'{pythonserror.__class__.__name__} : {pythonserror}')
         if config['ContinueRunningAfterError'] == False:
+            del___pycache__()
             raise SystemExit()
         # elif config['ContinueRunningAfterError'] == 'warn':
         #     print('Warning: The program will continue running after an error.')
@@ -265,7 +269,7 @@ class Nonetype(Object):
     def __repr__(self) -> str:
         return f'<Object{self.__class__.__name__} [{self.value}]>'
 
-def GetType(value: object) -> str:
+def GetType(value: object) -> str: # type: ignore
     pass
 
 class Function():
@@ -286,7 +290,7 @@ class Function():
                 'ValueError',
                 f'Function {self.name} requires {len(self.args)} arguments, but {len(args)} arguments were given',
                 self.number,
-                self.body,
+                self.body, # type: ignore
                 self.name
             )
         
@@ -301,7 +305,7 @@ class Function():
             runner.run_fortexts(self.body[0], None)
     
     def __repr__(self) -> str:
-        return f'<Function {self.name}-{self.args}-{self.isBuiltins=}>'
+        return f'<Function {self.name}-{self.args}-isBuiltins={self.isBuiltins}>'
 
 class Runner():
     def __init__(self, EnvironmentName: str, *, config: configType={'ContinueRunningAfterError': False}):
@@ -319,38 +323,47 @@ class Runner():
                     'value' : Function(
                         'print',
                         ['value'],
-                        ['print(value)'],
+                        ['...'],
                         True,
                         0,
-                        'def print(value):'
+                        'def print(value): ...'
                     ),
                     'type': Function(
                         'print',
                         ['value'],
-                        ['print(value)'],
+                        ['...'],
                         True,
                         0,
-                        'def print(value):'
+                        'def print(value): ...'
                     ),
                 },
                 'input' : {
                     'value' : Function(
                         'input',
                         ['value'],
-                        ['input(value)'],
+                        ['...'],
                         True,
                         0,
-                        'def input(value):'
+                        'def input(value): ...'
                     ),
                     'type': Function(
                         'input',
                         ['value'],
-                        ['input(value)'],
+                        ['...'],
                         True,
                         0,
-                        'def input(value):'
+                        'def input(value): ...'
                     ),
                 },
+                'Kernel' : {
+                    'value' : {
+                        'Name' : KernelName,
+                        'Version' : version
+                    },
+                    # 'type' : {
+
+                    # }
+                }
             }
         )
         Environments.update({EnvironmentName : self.environment})
@@ -444,7 +457,7 @@ class Runner():
 class Functions():
     @staticmethod
     def FunctionsLogic(clsobj: Runner, linetext: str, number: int, path: str, name: str | None=None):
-        if linetext.split('(')[0].startswith(BuiltinsFunctoins[0]):
+        if linetext.split('(')[0].startswith('print'):
             p = linetext[6:][:-1]
             
             try:
@@ -458,7 +471,7 @@ class Functions():
             print(p)
             v = None
         
-        elif linetext.split('(')[0].startswith(BuiltinsFunctoins[1]):
+        elif linetext.split('(')[0].startswith('input'):
             p = linetext[6:][:-1]
 
             try:
@@ -471,11 +484,11 @@ class Functions():
 
             v = input(p)
 
-        elif linetext.split('(')[0].startswith(BuiltinsFunctoins[2]):
+        elif linetext.split('(')[0].startswith('import'):
             p = linetext[7:][:-1]
 
-            if p == 'Edition_logsForXRthon':
-                print(Edition_logsForXRthon)
+            if p == 'Engllsh_Edition_logsForXRthon':
+                print(English_Edition_logsForXRthon)
 
             elif p in os.listdir(PackagesFolderPath):
                 if p in NowImport:
@@ -520,12 +533,19 @@ class Functions():
 
             elif p in BuiltinsPackages:
                 if p == 'os':
-                    clsobj.environment.set_values({'os' : {'value' : {i : j for i, j in os.__dict__.items()}}})
-                elif p == 'math':
-                    import math
-                    clsobj.environment.set_values({'math' : {'value' : {i : j for i, j in math.__dict__.items()}}})
+                    clsobj.environment.set_values({'os' : {'value' : {
+                        'environ' : os.environ,
+                        'name' : os.name,
+                    }}})
                 elif p == 'sys':
-                    clsobj.environment.set_values({'sys' : {'value' : {'version' : version}}})
+                    clsobj.environment.set_values({'sys' : {'value' : {
+                        'version' : version
+                    }}})
+                elif p == 'XRthon':
+                    clsobj.environment.set_values({'XRthon' : {'value' : {
+                        'version' : version,
+                        
+                    }}})
                 else:
                     pass
                 
@@ -539,16 +559,22 @@ class Functions():
 
             v = 'None'
 
-        elif linetext.split('(')[0].startswith(BuiltinsFunctoins[3]):
+        elif linetext.split('(')[0].startswith('quit'):
             # name = linetext[4:][:-1]
 
             root.raiser('SystemExit', '', number, linetext, path if not path is None else '<String>', config=root.config)
 
             pass
+        elif linetext.split('(')[0].startswith('type'):
+            
+            pass
 
-        elif linetext.split('(')[0].startswith(keys[1]):
+        elif linetext.split('(')[0].startswith('def_function'):
             name = linetext[13:][:-1]
             v = 'None'
+
+        elif linetext.split('(')[0].startswith(clsobj.environment.values.keys()): # type: ignore
+            pass
 
         else:
             v = 'None'
@@ -633,7 +659,7 @@ class Functions():
 class Variable():
     @staticmethod
     def VariableLogic(clsobj: Runner, value: object, number: int, linetext: str, path: str):
-        type_ = None
+        type_ = None # type: ignore
         
         value = str(value)
         if '.' in value:
@@ -696,3 +722,5 @@ root = Runner('root')
 
 def config_root(config: configType):
     root.config = config
+
+del___pycache__()

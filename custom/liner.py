@@ -31,13 +31,24 @@ class Liner(indrxer.IndexText):
         self.bind("<Button-1>", lambda event: self._see())
         self.bind("<B2-Motion>", lambda event: self._see())
         self.bind("<MouseWheel>", lambda event: self._see())
+        self.bind("<Control-b>", self.toggle_breakpoint)  # 添加断点快捷键
+
+    def toggle_breakpoint(self, event=None):
+        line_number = self.get_lineno_at_cursor()
+        if line_number in self.breakpoints:
+            self.remove_breakpoint(line_number)
+        else:
+            self.set_breakpoint(line_number)
+        self.redraw()
 
     def _see(self):
         self.see(str(float(int(float(self.index('insert'))) + 2)))  # 一直显示光标所在行
 
     def update_fonts(self):
         self.config(font=(
-            self.font, self.font_size, 'bold' if self.is_bold else 'normal', 'italic' if self.is_italic else 'roman'))
+            self.font, self.font_size, 'bold' if self.is_bold else 'normal', 'italic' if self.is_italic else 'roman'
+            ) # type: ignore
+        )
 
     def redraw(self):
         self.update_fonts()
@@ -51,9 +62,16 @@ class Liner(indrxer.IndexText):
                     break
                 y = dline[1]
                 linenum = str(i).split(".")[0]
-                self.numl.create_text(2, y, anchor="nw", text=linenum, fill=self.line,
-                                      font=(self.font, self.font_size, 'bold' if self.is_bold else 'normal',
-                                            'italic' if self.is_italic else 'roman'))
+                if linenum in self.breakpoints:
+                    self.numl.create_text(2, y, anchor="nw", text=linenum, fill='red',
+                                          font=(self.font, self.font_size, 'bold' if self.is_bold else 'normal',
+                                                'italic' if self.is_italic else 'roman') # type: ignore
+                                          )
+                else:
+                    self.numl.create_text(2, y, anchor="nw", text=linenum, fill=self.line,
+                                          font=(self.font, self.font_size, 'bold' if self.is_bold else 'normal',
+                                                'italic' if self.is_italic else 'roman') # type: ignore
+                                          )
                 i = self.index("%s+1line" % i)
 
             _font = font.Font(root=self.master, family=self.font, size=self.font_size)

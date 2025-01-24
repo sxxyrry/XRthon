@@ -21,3 +21,9 @@ def _() -> str:
 VersionSystemRulesMDFileContent = _()
 
 del _
+
+import _del_
+
+_del_.del___pycache__()
+
+del _del_

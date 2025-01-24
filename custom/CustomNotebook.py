@@ -10,7 +10,7 @@ class CustomNotebook(ttk.Notebook):
     def __init__(self, *args, **kwargs):
         if not self.__initialized:
             self.__initialize_custom_style()
-            self.__inititialized = True
+            self.__initialized = True
             self._protected_indices = set()
 
         kwargs["style"] = "CustomNotebook"
@@ -63,7 +63,7 @@ class CustomNotebook(ttk.Notebook):
         self.images = (
             tk.PhotoImage("img_close", data='''
                 R0lGODlhCAAIAMIBAAAAADs7O4+Pj9nZ2Ts7Ozs7Ozs7Ozs7OyH+EUNyZWF0ZWQg
-                d2l0aCBHSU1QACH5BAEKAAQALAAAAAAIAAgAAAMVGDBEA0qNJyGw7AmxmuaZhWEU
+                d2l0CBHSU1aQACH5BAEKAAQALAAAAAAIAAgAAAMVGDBEA0qNJyGw7AmxmuaZhWEU
                 5kEJADs=
                 '''),
             tk.PhotoImage("img_closeactive", data='''
@@ -102,14 +102,5 @@ class CustomNotebook(ttk.Notebook):
                 ]
             })
         ])
-if __name__ == "__main__":
-    root = tk.Tk()
-
-    notebook = CustomNotebook(width=200, height=200)
-    notebook.pack(side="top", fill="both", expand=True)
-
-    for color in ("red", "orange", "green", "blue", "violet", "yellow", "black", "white", "grey", "purple", "brown", "cyan"):
-        frame = tk.Frame(notebook, background=color)
-        notebook.add(frame, text=color)
-
-    root.mainloop()
+        style.configure("CustomNotebook", background="white", fieldbackground="white", foreground="black")
+        style.map("CustomNotebook.Tab", background=[("selected", "white")], foreground=[("selected", "black")])
