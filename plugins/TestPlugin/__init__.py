@@ -1,4 +1,4 @@
-from ..PluginAPI import (
+from ...PluginAPI import (
     root,
     parent,
     Up,

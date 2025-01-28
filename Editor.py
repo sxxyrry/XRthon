@@ -10,7 +10,7 @@ from colorama import Fore, Style, init
 from custom.CustomNotebook import CustomNotebook
 from custom.liner import Liner
 from Runner import Runner
-from Edition_logs import English_Edition_logsForEditor
+from Edition_logs import English_Edition_logsForEditor, Chinese_Edition_logsForEditor
 from VersionSystem import VersionSystem
 from versions import GetVersionForEditor
 from _del_ import del___pycache__
@@ -89,10 +89,15 @@ class Editor():
         self.Plugin_menu = tk.Menu(self.Up)
         self.Plugin_menu.add_command(label="Installed Plugins", command=self.InstalledPluginsInterface)
 
+        self.EditionLogs_menu = tk.Menu(self.Up)
+        self.EditionLogs_menu.add_command(label="English Edition Logs", command=self.EditionLogsInterface_English)
+        self.EditionLogs_menu.add_command(label="Chinese Edition Logs", command=self.EditionLogsInterface_Chinese)
+
         self.Up.add_cascade(label="File", menu=self.File_menu)
         self.Up.add_cascade(label="About", menu=self.About_menu)
         self.Up.add_cascade(label="Plugins", menu=self.Plugin_menu)
-        self.Up.add_command(label="Edition Logs", command=self.EditionLogsInterface)
+        # self.Up.add_command(label="Edition Logs", command=self.EditionLogsInterface)
+        self.Up.add_cascade(label="Edition Logs", menu=self.EditionLogs_menu)
         self.Up.add_command(label="Version", command=self.VersionInterface)
         self.Up.add_command(label="Toggle Theme", command=self.toggle_theme)
         self.Up.add_command(label="Exit", command=self.root.destroy)
@@ -144,8 +149,15 @@ class Editor():
         PluginsList: list[tuple[str, Literal['Enable', 'Disable']]] = GetInstalledPluginsList()
 
         for i in range(len(PluginsList)):
-            t = tk.Label(_, text=f"{i + 1} Name: {PluginsList[i][0]} ({PluginsList[i][1]})")
+            f = tk.Frame(_)
+
+            # btn = tk.Button()
+            # btn.pack()
+
+            t = tk.Label(f, text=f"{i + 1} Name: {PluginsList[i][0]} ({PluginsList[i][1]})")
             t.pack()
+
+            f.pack()
         
         _.mainloop()
 
@@ -177,11 +189,21 @@ class Editor():
 
         _.mainloop()
 
-    def EditionLogsInterface(self):
+    def EditionLogsInterface_English(self):
         _ = tkt.Tk('Edition Logs')
 
         t = scrolledtext.ScrolledText(_, width=100, height=20)
         t.insert(tk.END, English_Edition_logsForEditor)
+        t.config(state='disabled')
+        t.pack()
+
+        _.mainloop()
+
+    def EditionLogsInterface_Chinese(self):
+        _ = tkt.Tk('版本记录')
+
+        t = scrolledtext.ScrolledText(_, width=100, height=20)
+        t.insert(tk.END, Chinese_Edition_logsForEditor)
         t.config(state='disabled')
         t.pack()
 

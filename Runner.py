@@ -3,7 +3,7 @@ from folder import folder
 from types import NoneType
 from typing import Any, TypedDict
 from versions import GetVersionForXRthon
-from Edition_logs import English_Edition_logsForXRthon
+from Edition_logs import Chinese_Edition_logsForXRthon, English_Edition_logsForXRthon
 from _del_ import del___pycache__
 
 
@@ -489,6 +489,9 @@ class Functions():
 
             if p == 'Engllsh_Edition_logsForXRthon':
                 print(English_Edition_logsForXRthon)
+
+            elif p == 'Chinese_Edition_logsForXRthon':
+                print(Chinese_Edition_logsForXRthon)
 
             elif p in os.listdir(PackagesFolderPath):
                 if p in NowImport:

@@ -18,3 +18,12 @@ def GetVersionForEditor():
             version: str = _[:-9]
     
     return version
+
+def GetVersion(EditionLogs: str) -> str:
+    version = ''
+
+    for _ in EditionLogs.split('\n'):
+        if _.endswith(' Version:'):
+            version: str = _[:-9]
+    
+    return version

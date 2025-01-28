@@ -33,7 +33,11 @@ def main():
 
     time.sleep(SleepTime)
 
-    print(f'{Fore.LIGHTCYAN_EX}You can use "import(Edition_logsForXRthon)" to views edition log.{Style.RESET_ALL}')
+    print(f'{Fore.LIGHTCYAN_EX}You can use "import(English_Edition_logsForXRthon)" to views edition log.{Style.RESET_ALL}')
+
+    time.sleep(SleepTime)
+
+    print(f'{Fore.LIGHTCYAN_EX}You can use "import(Chinese_Edition_logsForXRthon)" to views edition log (Chinese version).{Style.RESET_ALL}')
 
     time.sleep(SleepTime)
 

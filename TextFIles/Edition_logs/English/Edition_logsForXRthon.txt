@@ -26,3 +26,5 @@ B--0--0.2--_indev--2024*12*1 Version:
 B--0--0.1--_indev--2025*1*1 Version:
     Added LICENSE File
     (ID wanna write...)
+B--0--0.1--_indev--2025*1*2 Version:
+    Added Chinese Edition logs
