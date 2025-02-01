@@ -487,7 +487,7 @@ class Functions():
         elif linetext.split('(')[0].startswith('import'):
             p = linetext[7:][:-1]
 
-            if p == 'Engllsh_Edition_logsForXRthon':
+            if p == 'English_Edition_logsForXRthon':
                 print(English_Edition_logsForXRthon)
 
             elif p == 'Chinese_Edition_logsForXRthon':
@@ -568,15 +568,16 @@ class Functions():
             root.raiser('SystemExit', '', number, linetext, path if not path is None else '<String>', config=root.config)
 
             pass
+
         elif linetext.split('(')[0].startswith('type'):
-            
             pass
 
         elif linetext.split('(')[0].startswith('def_function'):
             name = linetext[13:][:-1]
             v = 'None'
 
-        elif linetext.split('(')[0].startswith(clsobj.environment.values.keys()): # type: ignore
+        elif linetext.split('(')[0] in clsobj.environment.values.keys():
+             # type: ignore
             pass
 
         else:

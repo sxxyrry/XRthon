@@ -1,3 +1,4 @@
+from calendar import c
 import os
 import sys
 import tkinter as tk
@@ -21,6 +22,7 @@ from PluginAPI import (
     Up,
     Bottom,
     notebook,
+    config
 )
 from Plugin import LoadPlugins, GetLoadedPlugins, GetInstalledPluginsList
 from logs import Check_log, Runner_log
@@ -65,42 +67,101 @@ class Editor():
         self.parent: tk.Frame = parent
         self.Up: tk.Menu = Up
         self.Bottom: tk.Frame = Bottom
-        self.theme = "light"
         self.style = ttk.Style()
         self.bind_shortcuts()
+        self.config = config
 
-        self.Run_Button = tk.Button(self.Bottom, text="Run", command=self.RunCode)
+        def _EN():
+            self.texts = [
+                "Run",
+                "Add Editor Page",
+                "Open File",
+                "Save File",
+                "Choose File and Run",
+                "About",
+                "About Us",
+                "Install Plugins",
+                "English Edition Logs",
+                "Chinese Edition Logs",
+                "File",
+                "About",
+                "Plugins",
+                "Edition Logs",
+                "Version",
+                "Exit",
+                "Tips",
+                "Effective after restart",
+                "Close Tab",
+                "Do you want to close this tab?",
+                "Select a file to save",
+                "Select a file to open",
+                "Switch Language",
+            ]
+
+        if self.config.language == 'en':
+            _EN()
+        elif self.config.language == 'zh-cn':
+            self.texts = [
+                "运行",
+                "添加编辑页面",
+                "打开文件",
+                "保存文件",
+                "选择文件并运行",
+                "关于",
+                "关于我们",
+                "安装插件",
+                "英文版日志",
+                "中文版日志",
+                "文件",
+                "关于",
+                "插件",
+                "版本日志",
+                "版本",
+                "退出",
+                "提示",
+                "重启后生效",
+                "关闭标签页",
+                "您是否要关闭此标签页？",
+                "选择文件保存",
+                "选择文件打开",
+                "切换语言",
+            ]
+        else:
+            _EN()
+
+        self.Run_Button = tk.Button(self.Bottom, text=self.texts[0], command=self.RunCode)
         self.Run_Button.pack(side=tk.RIGHT)
 
-        self.add_editor_page_Button = tk.Button(self.Bottom, text="Add Editor Page", command=self.add_editor_page)
+        self.add_editor_page_Button = tk.Button(self.Bottom, text=self.texts[1], command=self.add_editor_page)
         self.add_editor_page_Button.pack(side=tk.RIGHT)
 
         self.File_menu = tk.Menu(self.Up)
-        self.File_menu.add_command(label="Open File", command=self.open_file)
-        self.File_menu.add_command(label="Save File", command=self.save_file)
-        self.File_menu.add_command(label="Choose File and Run", command=self.choose_file_and_run)
+        self.File_menu.add_command(label=self.texts[2], command=self.open_file)
+        self.File_menu.add_command(label=self.texts[3], command=self.save_file)
+        self.File_menu.add_command(label=self.texts[4], command=self.choose_file_and_run)
         # self.File_menu.pack(side=tk.LEFT)
 
         self.About_menu = tk.Menu(self.Up)
-        self.About_menu.add_command(label="About", command=self.AboutInterface)
-        self.About_menu.add_command(label="About Us", command=self.AboutUsInterface)
+        self.About_menu.add_command(label=self.texts[5], command=self.AboutInterface)
+        self.About_menu.add_command(label=self.texts[6], command=self.AboutUsInterface)
         # lambda: messagebox.showinfo("About Us", AUT)
 
         self.Plugin_menu = tk.Menu(self.Up)
-        self.Plugin_menu.add_command(label="Installed Plugins", command=self.InstalledPluginsInterface)
+        self.Plugin_menu.add_command(label=self.texts[7], command=self.InstalledPluginsInterface)
 
         self.EditionLogs_menu = tk.Menu(self.Up)
-        self.EditionLogs_menu.add_command(label="English Edition Logs", command=self.EditionLogsInterface_English)
-        self.EditionLogs_menu.add_command(label="Chinese Edition Logs", command=self.EditionLogsInterface_Chinese)
+        self.EditionLogs_menu.add_command(label=self.texts[8], command=self.EditionLogsInterface_English)
+        self.EditionLogs_menu.add_command(label=self.texts[9], command=self.EditionLogsInterface_Chinese)
 
-        self.Up.add_cascade(label="File", menu=self.File_menu)
-        self.Up.add_cascade(label="About", menu=self.About_menu)
-        self.Up.add_cascade(label="Plugins", menu=self.Plugin_menu)
+        self.Up.add_cascade(label=self.texts[10], menu=self.File_menu)
+        self.Up.add_cascade(label=self.texts[11], menu=self.About_menu)
+        self.Up.add_cascade(label=self.texts[12], menu=self.Plugin_menu)
         # self.Up.add_command(label="Edition Logs", command=self.EditionLogsInterface)
-        self.Up.add_cascade(label="Edition Logs", menu=self.EditionLogs_menu)
-        self.Up.add_command(label="Version", command=self.VersionInterface)
-        self.Up.add_command(label="Toggle Theme", command=self.toggle_theme)
-        self.Up.add_command(label="Exit", command=self.root.destroy)
+        self.Up.add_cascade(label=self.texts[13], menu=self.EditionLogs_menu)
+        self.Up.add_command(label=self.texts[22], command=self.switch_language)
+        self.Up.add_command(label=self.texts[14], command=self.VersionInterface)
+        # self.Up.add_command(label="Toggle Theme", command=self.toggle_theme)
+        self.Up.add_command(label=self.texts[15], command=self.root.destroy)
         
         self.root.config(menu=self.Up)
 
@@ -108,6 +169,24 @@ class Editor():
 
         self.Bottom.pack(side=tk.BOTTOM, fill=tk.X)
         self.notebook.pack(fill=tk.BOTH, expand=True)
+
+    def switch_language(self):
+        if self.config.language == 'en':
+            a = 'English'
+            b = '中文'
+            if messagebox.askyesno(self.texts[22], f'{a} -> {b}'):
+                self.config.SwitchLanguage('zh-cn')
+            else:
+                return
+        elif self.config.language == 'zh-cn':
+            a = '中文'
+            b = 'English'
+            if messagebox.askyesno(self.texts[22], f'{a} -> {b}'):
+                self.config.SwitchLanguage('en')
+            else:
+                return
+
+        messagebox.showinfo(self.texts[16], self.texts[17])
 
     def bind_shortcuts(self):
         self.root.bind("<Control-s>", lambda event: self.save_file())
@@ -118,30 +197,30 @@ class Editor():
         self.root.bind("<Control-S>", lambda event: self.save_all_files())
 
     def close_tab(self, index):
-        if messagebox.askokcancel("Close Tab", "Do you want to close this tab?"):
+        if messagebox.askokcancel(self.texts[18], self.texts[19]):
             self.notebook.forget(index)
             del self.frames[index]
 
     def save_all_files(self):
         for i, (frame, line) in enumerate(self.frames):
-            file_path = filedialog.asksaveasfilename(defaultextension='.XRthon', filetypes=[("XRthon Files", "*.XRthon")], initialdir=os.getcwd())
+            file_path = filedialog.asksaveasfilename(title=self.texts[20],defaultextension='.XRthon', filetypes=[("XRthon Files", "*.XRthon")], initialdir=os.getcwd())
             if file_path:
                 with open(file_path, 'w') as file:
                     file.write(line.get_text())
 
-    def toggle_theme(self):
-        if self.theme == "light":
-            self.theme = "dark"
-            self.style.configure("CustomNotebook", background="black", fieldbackground="black", foreground="black")
-            self.style.map("CustomNotebook.Tab", background=[("selected", "black")], foreground=[("selected", "black")])
-            for frame, line in self.frames:
-                line.config(bg="black", fg="white")
-        else:
-            self.theme = "light"
-            self.style.configure("CustomNotebook", background="white", fieldbackground="white", foreground="black")
-            self.style.map("CustomNotebook.Tab", background=[("selected", "white")], foreground=[("selected", "white")])
-            for frame, line in self.frames:
-                line.config(bg="white", fg="black")
+    # def toggle_theme(self):
+    #     if self.theme == "light":
+    #         self.theme = "dark"
+    #         self.style.configure("CustomNotebook", background="black", fieldbackground="black", foreground="black")
+    #         self.style.map("CustomNotebook.Tab", background=[("selected", "black")], foreground=[("selected", "black")])
+    #         for frame, line in self.frames:
+    #             line.config(bg="black", fg="white")
+    #     else:
+    #         self.theme = "light"
+    #         self.style.configure("CustomNotebook", background="white", fieldbackground="white", foreground="black")
+    #         self.style.map("CustomNotebook.Tab", background=[("selected", "white")], foreground=[("selected", "white")])
+    #         for frame, line in self.frames:
+    #             line.config(bg="white", fg="black")
 
     def InstalledPluginsInterface(self):
         _ = tkt.Tk('Installed Plugins')
@@ -210,14 +289,14 @@ class Editor():
         _.mainloop()
 
     def open_file(self):
-        _ = filedialog.askopenfiles(filetypes=[("XRthon Files", "*.XRthon")], initialdir=os.getcwd())
+        _ = filedialog.askopenfiles(title=self.texts[21], filetypes=[('XRthon Files', '*.XRthon')], initialdir=os.getcwd())
 
         for i in _:
             self.add_editor_page()
             self.frames[self.frame_id][1].load_content(i.read())
 
     def save_file(self):
-        _ = filedialog.asksaveasfile(defaultextension='.XRthon', filetypes=[("XRthon Files", "*.XRthon")], initialdir=os.getcwd())
+        _ = filedialog.asksaveasfile(title=self.texts[20], defaultextension='.XRthon', filetypes=[('XRthon Files', '*.XRthon')], initialdir=os.getcwd())
         if _:
             _.write(self.frames[self.Now_frame_id][1].get_text())
 

@@ -9,8 +9,12 @@ def del_file(path):
     shutil.rmtree(path)
 
 def del___pycache__():
-    if not os.path.exists('./__pycache__'): return
-    del_file('./__pycache__')
+    if os.path.exists('./custom/__pycache__/'):
+        del_file('./custom/__pycache__/')
+    if os.path.exists('./log/__pycache__/'):
+        del_file('./log/__pycache__/')
+    if os.path.exists('./__pycache__'):
+        del_file('./__pycache__')
 
 # def del___pycache___loop():
 #     while isRun:

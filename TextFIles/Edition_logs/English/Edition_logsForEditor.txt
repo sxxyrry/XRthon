@@ -14,3 +14,7 @@ B--0--0.1--_indev--2025*1*1 Version:
     (ID wanna write...)
 B--0--0.1--_indev--2025*1*2 Version:
     Refactoring Plugins
+B--0--0.1--_indev--2025*1*3 Version:
+    Delete and switch themes
+    Add language switching (Chinese English translation)
+

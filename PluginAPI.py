@@ -26,6 +26,7 @@ from logs import (
     Runner_log,
     Warning_log,
 )
+from config import Config
 import os
 import sys
 from colorama import Fore, Style, init
@@ -39,6 +40,7 @@ parent = tk.Frame(root)
 Up = tk.Menu(parent)
 Bottom = tk.Frame(parent)
 notebook = CustomNotebook(parent)
+config = Config()
 
 def FindPlugin(plugin_name: str) -> bool:
     if plugin_name in os.listdir(FolderPath):

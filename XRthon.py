@@ -86,6 +86,19 @@ def main():
                         print(result)
                     except Exception as e:
                         runner.raiser(f'{e.__class__.__name__}', f'{e}', 1, command, '<String>', e, runner.config)
+            elif command == 'help()':
+                text = '''\
+Use "print()" to output text.
+"" is a string.
+'' is a string.
+1 is a number.
+Use "input()" to get input.
+Use "name = value" to set a variable.
+Use "name = input()" to get input.
+Use "import()" to import a module.
+\
+'''
+                print(text)
             else:
                 if command in runner.environment.values.keys():
                     print(runner.environment.values[command]['value'])

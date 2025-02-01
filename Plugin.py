@@ -1,4 +1,4 @@
-import os, subprocess, shutil
+import os, shutil
 from typing import Literal
 from folder import folder
 from PluginAPI import *
