@@ -6,7 +6,6 @@ from Runner import Runner
 from typing import Any, Literal, NoReturn
 import tkinter.ttk as ttk
 import _tkinter as _tk
-from folder import folder
 from Edition_logs import (
     English_Edition_logsForEditor,
     English_Edition_logsForXRthon,
@@ -33,7 +32,7 @@ from colorama import Fore, Style, init
 
 
 LoadedPluginsList: list[str] = []
-FolderPath = pathlib.Path(os.path.join(folder, './plugins/')).resolve()
+FolderPath = pathlib.Path(os.path.join(pathlib.Path(__file__).parent.resolve(), './plugins/')).resolve()
 root = tkt.Tk("XRthon Editor")
 frames: list[tuple[tk.Frame, Liner]] = []
 parent = tk.Frame(root)
@@ -84,12 +83,12 @@ def JudgeVersion_Equal_Plugin(plugin_name: str, Version: str) -> bool:
 
 def ImportPlugin(plugin_name: str, Now_plugin_name) -> dict[str, Any] | NoReturn:
     def Load(path: str):
-        folder_ = pathlib.Path(path).resolve()
-        filePath = os.path.join(folder_, './__init__.py')
+        path = str(pathlib.Path(path).resolve())
+        filePath = os.path.join(path, './__init__.py')
         
         Plugins_log.info(f"Loading plugin {plugin_name} ({path})")
         try:
-            with open(filePath, 'r') as f:
+            with open(filePath, 'r', encoding='UTF-8') as f:
                 c = f.read()
                 c = c.replace('../../', '')
                 c = c.replace('...', '')
@@ -106,7 +105,7 @@ def ImportPlugin(plugin_name: str, Now_plugin_name) -> dict[str, Any] | NoReturn
         path = os.path.join(FolderPath, plugin_name)
         if os.path.isdir(path):
             if os.path.exists(os.path.join(path, './config.json')):
-                with open(os.path.join(path, './config.json'), 'r') as f:
+                with open(os.path.join(path, './config.json'), 'r', encoding='UTF-8') as f:
                     config: dict[str, str] = yaml.safe_load(f)
 
                 if config['state'] == 'Enable':
@@ -124,9 +123,13 @@ Because this Plugin ({Now_plugin_name}) needs to use it.\n\
                         return Load(path)
                     else:
                         raise ValueError('Plugin is disabled.')
+            
             else:
-                raise ValueError('Plugin may be damaged.')
+                Plugins_log.error(f"Plugin {plugin_name} is not a valid plugin (No config.json) ({path})")
+                raise Exception(f"Plugin {plugin_name} is not a valid plugin (No config.json) ({path})")
+        
         else:
-            raise ValueError('Plugin is not a directory.')
+            Plugins_log.error(f"Plugin {plugin_name} is not a valid plugin (Isn\'t a D) ({path})")
+            raise Exception(f"Plugin {plugin_name} is not a valid plugin (Isn\'t a D) ({path})")
     else:
-        raise ValueError('Plugin is not found.')
+        raise ValueError(f'Plugin {plugin_name} is not found.')

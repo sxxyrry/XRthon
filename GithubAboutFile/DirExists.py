@@ -16,12 +16,12 @@ def DirExists(access_token, owner, repo, file_path):
     
     try:
         # 获取文件内容
-        response = api.repos.get_content(path=file_path) # type: ignore
+        response = api.repos.get_content(path=file_path)  # type: ignore
         
         # 如果返回结果是目录，则返回 True
-        return isinstance(response, list)
+        return not type(response) == list
     except Exception as e:
-        if e.status == 404: # type: ignore
+        if hasattr(e, 'status') and e.status == 404:  # type: ignore
             return False
         else:
             raise e

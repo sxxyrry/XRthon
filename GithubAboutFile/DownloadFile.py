@@ -26,6 +26,3 @@ def DownloadFile(access_token, owner, repo, file_path, local_path):
     with open(local_path, 'wb') as f:
         f.write(decoded_content)
     
-    # else:
-    #     raise FileNotFoundError(f"File {file_path} not found.")
-    # print(f"File {file_path} has been downloaded to {local_path}.")

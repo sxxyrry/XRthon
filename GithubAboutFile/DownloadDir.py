@@ -1,7 +1,11 @@
 from .DirExists import DirExists
 from .DownloadFile import DownloadFile
-import ghapi.all as ghapi, os
+import ghapi.all as ghapi
+import os
+import logging
 
+# 设置日志记录
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def DownloadDir(access_token, owner, repo, dir_path, local_path):
     """
@@ -17,16 +21,22 @@ def DownloadDir(access_token, owner, repo, dir_path, local_path):
     api = ghapi.GhApi(owner=owner, repo=repo, token=access_token)
 
     if DirExists(access_token, owner, repo, dir_path):
-        response = api.repos.get_content(path=dir_path) # type: ignore
+        try:
+            response = api.repos.get_content(path=dir_path)  # type: ignore
 
-        for item in response:
-            if item['type'] == 'file':
-                file_path = os.path.join(local_path, item['name'])
-                DownloadFile(access_token, owner, repo, item['path'], file_path)
-            elif item['type'] == 'dir':
-                sub_dir_path = os.path.join(local_path, item['name'])
-                os.makedirs(sub_dir_path, exist_ok=True)
-                DownloadDir(access_token, owner, repo, item['path'], sub_dir_path)
-    
+            os.makedirs(local_path, exist_ok=True)
+
+            for item in response:
+                if item['type'] == 'file':
+                    file_path = os.path.join(local_path, item['name'])
+                    DownloadFile(access_token, owner, repo, item['path'], file_path)
+                elif item['type'] == 'dir':
+                    sub_dir_path = os.path.join(local_path, item['name'])
+                    os.makedirs(sub_dir_path, exist_ok=True)
+                    DownloadDir(access_token, owner, repo, item['path'], sub_dir_path)
+        except Exception as e:
+            logging.error(f"Error downloading directory {dir_path}: {e}")
+            raise
     else:
+        logging.error(f"Directory not found: {dir_path}")
         raise FileNotFoundError(f"Directory not found: {dir_path}")

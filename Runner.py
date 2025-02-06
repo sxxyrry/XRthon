@@ -5,7 +5,10 @@ from typing import Any, TypedDict
 from versions import GetVersionForXRthon
 from Edition_logs import Chinese_Edition_logsForXRthon, English_Edition_logsForXRthon
 from _del_ import del___pycache__
+from config import Config
 
+
+config = Config()
 
 KernelName = 'XRXTR'
 
@@ -549,6 +552,9 @@ class Functions():
                         'version' : version,
                         
                     }}})
+                elif p == 'this':
+                    # print('This is XRthon')
+                    pass
                 else:
                     pass
                 

@@ -1,7 +1,7 @@
-from calendar import c
 import os
 import sys
 import tkinter as tk
+import webbrowser
 from typing import Literal
 import tkintertools as tkt
 import tkinter.ttk as ttk
@@ -13,6 +13,7 @@ from custom.liner import Liner
 from Runner import Runner
 from Edition_logs import English_Edition_logsForEditor, Chinese_Edition_logsForEditor
 from VersionSystem import VersionSystem
+from folder import folder
 from versions import GetVersionForEditor
 from _del_ import del___pycache__
 from PluginAPI import (
@@ -22,9 +23,17 @@ from PluginAPI import (
     Up,
     Bottom,
     notebook,
-    config
+    config,
 )
-from Plugin import LoadPlugins, GetLoadedPlugins, GetInstalledPluginsList
+from Plugin import (
+    LoadPlugins,
+    GetLoadedPlugins,
+    GetInstalledPluginsList,
+    GetAllPlugins,
+    FindPlugin,
+    InstallPlugin,
+    UninstallPlugin,
+)
 from logs import Check_log, Runner_log
 
 
@@ -57,6 +66,7 @@ else:
     # messagebox.showinfo("Check", "Your XRthon Version format is Invalid.")
     raise SystemExit()
 
+
 class Editor():
     def __init__(self):
         self.frames: list[tuple[tk.Frame, Liner]] = frames
@@ -71,7 +81,7 @@ class Editor():
         self.bind_shortcuts()
         self.config = config
 
-        def _EN():
+        def _EN(self=self):
             self.texts = [
                 "Run",
                 "Add Editor Page",
@@ -80,7 +90,7 @@ class Editor():
                 "Choose File and Run",
                 "About",
                 "About Us",
-                "Install Plugins",
+                "Installed Plugins",
                 "English Edition Logs",
                 "Chinese Edition Logs",
                 "File",
@@ -90,12 +100,26 @@ class Editor():
                 "Version",
                 "Exit",
                 "Tips",
-                "Effective after restart",
+                "Effective after restart.",
                 "Close Tab",
                 "Do you want to close this tab?",
                 "Select a file to save",
                 "Select a file to open",
                 "Switch Language",
+                "Introduction website",
+                " FIle",
+                "Name",
+                "Enabled",
+                "Disabled",
+                "All Plugins",
+                "Install Plugin",
+                "Are you sure you want to install the {} plugin?",
+                "Install Plugin complete.",
+                " (exist)",
+                "",
+                "Uninstall Plugin",
+                "Are you sure you want to uninstall the {} plugin?",
+                "Uninstall Plugin complete.",
             ]
 
         if self.config.language == 'en':
@@ -109,7 +133,7 @@ class Editor():
                 "选择文件并运行",
                 "关于",
                 "关于我们",
-                "安装插件",
+                "安装的插件",
                 "英文版日志",
                 "中文版日志",
                 "文件",
@@ -119,12 +143,26 @@ class Editor():
                 "版本",
                 "退出",
                 "提示",
-                "重启后生效",
+                "重启后生效。",
                 "关闭标签页",
                 "您是否要关闭此标签页？",
                 "选择文件保存",
                 "选择文件打开",
                 "切换语言",
+                "介绍网站",
+                "文件",
+                "名称",
+                "启用",
+                "禁用",
+                "所有插件",
+                "安装插件",
+                "确定安装{}插件吗？",
+                "安装插件完成。",
+                "（存在）",
+                "",
+                "卸载插件",
+                "确定卸载{}插件吗？",
+                "卸载插件完成。",
             ]
         else:
             _EN()
@@ -147,6 +185,7 @@ class Editor():
         # lambda: messagebox.showinfo("About Us", AUT)
 
         self.Plugin_menu = tk.Menu(self.Up)
+        self.Plugin_menu.add_command(label=self.texts[28], command=self.AllPluginsInterface)
         self.Plugin_menu.add_command(label=self.texts[7], command=self.InstalledPluginsInterface)
 
         self.EditionLogs_menu = tk.Menu(self.Up)
@@ -158,10 +197,13 @@ class Editor():
         self.Up.add_cascade(label=self.texts[12], menu=self.Plugin_menu)
         # self.Up.add_command(label="Edition Logs", command=self.EditionLogsInterface)
         self.Up.add_cascade(label=self.texts[13], menu=self.EditionLogs_menu)
+        if self.config.VS == 'DEV':
+            self.Up.add_command(label="Restart", command=self.Restart)
+            self.Up.add_command(label="Toggle Theme", command=self.toggle_theme)
         self.Up.add_command(label=self.texts[22], command=self.switch_language)
+        self.Up.add_command(label=self.texts[23], command=self.Introduction_Website)
         self.Up.add_command(label=self.texts[14], command=self.VersionInterface)
-        # self.Up.add_command(label="Toggle Theme", command=self.toggle_theme)
-        self.Up.add_command(label=self.texts[15], command=self.root.destroy)
+        self.Up.add_command(label=self.texts[15], command=lambda: os._exit(0))
         
         self.root.config(menu=self.Up)
 
@@ -169,6 +211,13 @@ class Editor():
 
         self.Bottom.pack(side=tk.BOTTOM, fill=tk.X)
         self.notebook.pack(fill=tk.BOTH, expand=True)
+
+    def Introduction_Website(self):
+        webbrowser.open('https://sxxyrry.github.io/XRthon_Project/')
+
+    def Restart(self):
+        os.startfile(os.path.join(folder, "./Editor.py"))
+        os._exit(0)
 
     def switch_language(self):
         if self.config.language == 'en':
@@ -208,24 +257,24 @@ class Editor():
                 with open(file_path, 'w') as file:
                     file.write(line.get_text())
 
-    # def toggle_theme(self):
-    #     if self.theme == "light":
-    #         self.theme = "dark"
-    #         self.style.configure("CustomNotebook", background="black", fieldbackground="black", foreground="black")
-    #         self.style.map("CustomNotebook.Tab", background=[("selected", "black")], foreground=[("selected", "black")])
-    #         for frame, line in self.frames:
-    #             line.config(bg="black", fg="white")
-    #     else:
-    #         self.theme = "light"
-    #         self.style.configure("CustomNotebook", background="white", fieldbackground="white", foreground="black")
-    #         self.style.map("CustomNotebook.Tab", background=[("selected", "white")], foreground=[("selected", "white")])
-    #         for frame, line in self.frames:
-    #             line.config(bg="white", fg="black")
+    def toggle_theme(self):
+        if self.theme == "light":
+            self.theme = "dark"
+            self.style.configure("CustomNotebook", background="black", fieldbackground="black", foreground="black")
+            self.style.map("CustomNotebook.Tab", background=[("selected", "black")], foreground=[("selected", "black")])
+            for frame, line in self.frames:
+                line.config(bg="black", fg="white")
+        else:
+            self.theme = "light"
+            self.style.configure("CustomNotebook", background="white", fieldbackground="white", foreground="black")
+            self.style.map("CustomNotebook.Tab", background=[("selected", "white")], foreground=[("selected", "white")])
+            for frame, line in self.frames:
+                line.config(bg="white", fg="black")
 
     def InstalledPluginsInterface(self):
-        _ = tkt.Tk('Installed Plugins')
+        _ = tkt.Tk(self.texts[7])
 
-        PluginsList: list[tuple[str, Literal['Enable', 'Disable']]] = GetInstalledPluginsList()
+        PluginsList: list[tuple[str, Literal['Enabled', 'Disabled']]] = GetInstalledPluginsList()
 
         for i in range(len(PluginsList)):
             f = tk.Frame(_)
@@ -233,23 +282,80 @@ class Editor():
             # btn = tk.Button()
             # btn.pack()
 
-            t = tk.Label(f, text=f"{i + 1} Name: {PluginsList[i][0]} ({PluginsList[i][1]})")
-            t.pack()
+            state: str = PluginsList[i][1]
+            state: str = self.texts[26] if state == 'Enabled' else self.texts[27]
+
+            t = tk.Label(f, text=f"{i + 1} {self.texts[25]}: {PluginsList[i][0]} ({state})")
+            t.grid(row=0, column=0)
+
+            UninstallBtn = tk.Button(f, text=self.texts[34], command=lambda PluName=PluginsList[i][0]: self.UninstallPlugin(PluName))
+            UninstallBtn.grid(row=0, column=1)
 
             f.pack()
         
         _.mainloop()
 
-    def VersionInterface(self):
-        _ = tkt.Tk('Version')
+    def UninstallPlugin(self, PluName: str):
+        if messagebox.askyesno(self.texts[34], self.texts[35].format(PluName)):
 
-        lable = tk.Label(_, text=f'Version: {version}')
+            UninstallPlugin(PluName)
+
+            messagebox.showinfo(self.texts[34], self.texts[36])
+
+            messagebox.showinfo(self.texts[16], self.texts[17])
+        else:
+            return
+
+    def AllPluginsInterface(self):
+        _ = tkt.Tk(self.texts[29])
+
+        PluginsList: list[str] = GetAllPlugins()
+
+        for i in range(len(PluginsList)):
+            f = tk.Frame(_)
+
+            PluName = PluginsList[i]
+
+            t = tk.Label(f, text=f"{i + 1} {self.texts[25]}: {PluName}")
+            t.grid(row=0, column=0)
+
+            btn = tk.Button(f, text=self.texts[29], command=lambda PluName=PluName: self.InstallPlugin(PluName))
+
+            s = tk.Label(f, text=self.texts[32])
+
+            if FindPlugin(PluName):
+                btn.config(state='disabled')
+            else:
+                s.config(text=self.texts[33])
+            
+            s.grid(row=0, column=1)
+            btn.grid(row=0, column=2)
+
+            f.pack()
+        
+        _.mainloop()
+
+    def InstallPlugin(self, PluName: str):
+        if messagebox.askyesno(self.texts[29], self.texts[30].format(PluName)):
+            
+            InstallPlugin(PluName)
+
+            messagebox.showinfo(self.texts[29], self.texts[31])
+
+            LoadPlugins()
+        else:
+            return
+
+    def VersionInterface(self):
+        _ = tkt.Tk(self.texts[14])
+
+        lable = tk.Label(_, text=f'{self.texts[14]}: {version}')
         lable.pack()
 
         _.mainloop()
 
     def AboutInterface(self):
-        _ = tkt.Tk('About')
+        _ = tkt.Tk(self.texts[5])
 
         t = scrolledtext.ScrolledText(_, width=100, height=20)
         t.insert(tk.END, AT)
@@ -259,7 +365,7 @@ class Editor():
         _.mainloop()
 
     def AboutUsInterface(self):
-        _ = tkt.Tk('About Us')
+        _ = tkt.Tk(self.texts[6])
 
         t = scrolledtext.ScrolledText(_, width=100, height=20)
         t.insert(tk.END, AUT)
@@ -269,7 +375,7 @@ class Editor():
         _.mainloop()
 
     def EditionLogsInterface_English(self):
-        _ = tkt.Tk('Edition Logs')
+        _ = tkt.Tk(self.texts[13])
 
         t = scrolledtext.ScrolledText(_, width=100, height=20)
         t.insert(tk.END, English_Edition_logsForEditor)
@@ -328,10 +434,10 @@ class Editor():
         self.frames.append((frame, line))
         frame.bind('<Visibility>', lambda event: self.add_updater(frame, line))
         if self.i == 0:
-            self.notebook.add(frame, text="XRthon File")
+            self.notebook.add(frame, text=f"XRthon{self.texts[24]}")
             self.notebook.protect_tab(len(self.frames) - 1)
         else:
-            self.notebook.add(frame, text=f"XRthon File {self.i + 1}")
+            self.notebook.add(frame, text=f"XRthon{self.texts[24]} {self.i + 1}")
             self.notebook.select(len(self.frames) - 1)
         
         self.frame_id = len(self.frames) - 1
@@ -353,45 +459,29 @@ class Editor():
         self.parent.pack(fill=tk.NONE, expand=True)
 
 
-if __name__ == '__main__':
-    if len(sys.argv) == 1:
-        editor = Editor()
+def start():
+    global root  # 确保使用全局的 root 变量
+    # root = tkt.Tk("XRthon Editor")  # 创建新的主窗口
+    editor = Editor()
+    editor.pack()
+    editor.add_editor_page()
 
-        editor.pack()
-        editor.add_editor_page()
-
-        LoadPlugins()
-
-        try:
-            while True:
-                editor.update()
-                root.update()
-        except KeyboardInterrupt:
-            del___pycache__()
-            quit()
-
-        # root.mainloop()
-
-        del___pycache__()
-    elif len(sys.argv) == 2:
-        editor = Editor()
-
-        editor.pack()
-        editor.add_editor_page()
+    if len(sys.argv) == 2:
         editor.frames[editor.frame_id][1].load_content(open(sys.argv[1], 'r', encoding='UTF-8').read())
 
-        LoadPlugins()
+    LoadPlugins()
 
-        try:
-            while True:
-                editor.update()
-                root.update()
-        except KeyboardInterrupt:
-            del___pycache__()
-            quit()
-
-        # root.mainloop()
-
+    try:
+        while True:
+            root.update()
+            editor.update()
+    except KeyboardInterrupt:
         del___pycache__()
+
+    del___pycache__()
+
+if __name__ == '__main__':
+    if len(sys.argv) == 1 or len(sys.argv) == 2:
+        start()
     else:
         raise Exception('Invalid arguments')

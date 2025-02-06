@@ -13,6 +13,8 @@ def del___pycache__():
         del_file('./custom/__pycache__/')
     if os.path.exists('./log/__pycache__/'):
         del_file('./log/__pycache__/')
+    if os.path.exists('./VersionSystem/__pycache__'):
+        del_file('./VersionSystem/__pycache__')
     if os.path.exists('./__pycache__'):
         del_file('./__pycache__')
 
