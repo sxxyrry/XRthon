@@ -96,6 +96,7 @@ Use "input()" to get input.
 Use "name = value" to set a variable.
 Use "name = input()" to get input.
 Use "import()" to import a module.
+Use "quit()" to end the run of your program.
 \
 '''
                 print(text)

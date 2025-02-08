@@ -17,9 +17,13 @@ B--0--0.1--_indev--2025*1*2 Version:
 B--0--0.1--_indev--2025*1*3 Version:
     Deleted and switch themes
     Added language switching (Chinese English translation)
-B--0--0.1--_indev--2025*1*4 Version:
+B--0--0.1--_indev--2025*2*1 Version:
     Optimized Chinese translation
     Added installation plugins, uninstall plugins, plugin list
     Did not come with AddSomeXRthonToEditor plugin
     Added development mode (change VS to DEV in Config/VS.yaml to switch to development mode, change VS to NAL to switch to normal mode)
     Added introduction website
+B--0--0.1--_indev--2025*2*2 Version:
+    Added plugin update detection and update plugins
+    Modificationed of development mode file (now the Mod key in the config/mod. YAML file, with a value of DEV indicating development mode and a value of NAL indicating normal mode)
+    Fixed bugs

@@ -58,15 +58,15 @@ def GetEditionLogs_Plugin(plugin_name: str) -> str | NoReturn:
 
             EditionLogsFilePath = config['EditionLogsFilePath']
             if EditionLogsFilePath == '':
-                raise ValueError('EditionLogsFilePath is empty.')
+                raise ValueError(f'EditionLogsFilePath is empty. ({plugin_name})')
             else:
                 with open(os.path.join(FolderPath, plugin_name, EditionLogsFilePath), 'r') as f:
                     EditionLogs: str = f.read()
                 return EditionLogs
         else:
-            raise ValueError('Plugin is not a directory.')
+            raise ValueError(f'Plugin is not a directory. ({plugin_name})')
     else:
-        raise ValueError('Plugin is not found.')
+        raise ValueError(f'Plugin is not found. ({plugin_name})')
 
 def GetVersionForEditionLogs_Plugin(plugin_name: str) -> str | NoReturn:
     EL = GetEditionLogs_Plugin(plugin_name)

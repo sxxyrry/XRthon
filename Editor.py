@@ -8,6 +8,7 @@ import tkinter.ttk as ttk
 import _tkinter as _tk
 from tkinter import filedialog, messagebox, scrolledtext
 from colorama import Fore, Style, init
+import yaml
 from custom.CustomNotebook import CustomNotebook
 from custom.liner import Liner
 from Runner import Runner
@@ -16,7 +17,10 @@ from VersionSystem import VersionSystem
 from folder import folder
 from versions import GetVersionForEditor
 from _del_ import del___pycache__
+from GithubAboutFile import GetFileText
+from BaseGConfig import token
 from PluginAPI import (
+    GetEditionLogs_Plugin,
     root,
     frames,
     parent,
@@ -24,6 +28,9 @@ from PluginAPI import (
     Bottom,
     notebook,
     config,
+    GetVersionForEditionLogs_Plugin,
+    GetVersion,
+    JudgeVersion_Less_Plugin,
 )
 from Plugin import (
     LoadPlugins,
@@ -120,6 +127,9 @@ class Editor():
                 "Uninstall Plugin",
                 "Are you sure you want to uninstall the {} plugin?",
                 "Uninstall Plugin complete.",
+                "Updata Plugin",
+                "Are you sure you want to update the {} plugin?",
+                "Updata Plugin complete.",
             ]
 
         if self.config.language == 'en':
@@ -163,6 +173,9 @@ class Editor():
                 "卸载插件",
                 "确定卸载{}插件吗？",
                 "卸载插件完成。",
+                "更新插件",
+                "确定更新{}插件吗？",
+                "更新插件完成。",
             ]
         else:
             _EN()
@@ -197,7 +210,7 @@ class Editor():
         self.Up.add_cascade(label=self.texts[12], menu=self.Plugin_menu)
         # self.Up.add_command(label="Edition Logs", command=self.EditionLogsInterface)
         self.Up.add_cascade(label=self.texts[13], menu=self.EditionLogs_menu)
-        if self.config.VS == 'DEV':
+        if self.config.Mod == 'DEV':
             self.Up.add_command(label="Restart", command=self.Restart)
             self.Up.add_command(label="Toggle Theme", command=self.toggle_theme)
         self.Up.add_command(label=self.texts[22], command=self.switch_language)
@@ -285,11 +298,54 @@ class Editor():
             state: str = PluginsList[i][1]
             state: str = self.texts[26] if state == 'Enabled' else self.texts[27]
 
-            t = tk.Label(f, text=f"{i + 1} {self.texts[25]}: {PluginsList[i][0]} ({state})")
+            PluName = PluginsList[i][0]
+
+            t = tk.Label(f, text=f"{i + 1} {self.texts[25]}: {PluName} ({state})")
             t.grid(row=0, column=0)
 
-            UninstallBtn = tk.Button(f, text=self.texts[34], command=lambda PluName=PluginsList[i][0]: self.UninstallPlugin(PluName))
+            UninstallBtn = tk.Button(f, text=self.texts[34], command=lambda PluName=PluName: self.UninstallPlugin(PluName))
             UninstallBtn.grid(row=0, column=1)
+
+            UpdateBtn = tk.Button(f, text=self.texts[37], command=lambda PluName=PluName: self.UpdatePlugin(PluName))
+            UpdateBtn.config(state='disabled')
+
+            if JudgeVersion_Less_Plugin(
+                PluName,
+                GetVersion(
+                    GetFileText(
+                        token,
+                        'sxxyrry',
+                        'XRthonPluginsDatabase',
+                        f'Plugins/{PluName}/{yaml.safe_load(
+                            GetFileText(
+                                token,
+                                'sxxyrry',
+                                'XRthonPluginsDatabase',
+                                f'Plugins/{PluName}/config.json'
+                            )
+                        )['EditionLogsFilePath'][2::]}'
+                    )
+                )
+            ):
+                UpdateBtn.config(state='normal')
+
+            # print(f'{GetVersion(
+            #         GetFileText(
+            #             token,
+            #             'sxxyrry',
+            #             'XRthonPluginsDatabase',
+            #             f'Plugins/{PluName}/{yaml.safe_load(
+            #                 GetFileText(
+            #                     token,
+            #                     'sxxyrry',
+            #                     'XRthonPluginsDatabase',
+            #                     f'Plugins/{PluName}/config.json'
+            #                 )
+            #             )['EditionLogsFilePath'][2::]}'
+            #         )
+            #     )=}')
+
+            UpdateBtn.grid(row=0, column=2)
 
             f.pack()
         
@@ -342,7 +398,19 @@ class Editor():
 
             messagebox.showinfo(self.texts[29], self.texts[31])
 
-            LoadPlugins()
+            messagebox.showinfo(self.texts[16], self.texts[17])
+        else:
+            return
+
+    def UpdatePlugin(self, PluName: str):
+        if messagebox.askyesno(self.texts[37], self.texts[38].format(PluName)):
+            
+            UninstallPlugin(PluName)
+            InstallPlugin(PluName)
+
+            messagebox.showinfo(self.texts[37], self.texts[39])
+
+            messagebox.showinfo(self.texts[16], self.texts[17])
         else:
             return
 

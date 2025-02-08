@@ -1,4 +1,6 @@
 import platform
+
+
 class Settings:
     def __init__(self):
         self.bg = "#ffffff"

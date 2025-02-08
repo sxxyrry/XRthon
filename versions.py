@@ -7,6 +7,8 @@ def GetVersionForXRthon():
     for _ in English_Edition_logsForXRthon.split('\n'):
         if _.endswith(' Version:'):
             version: str = _[:-9]
+        elif _.endswith(' Version:\r'):
+            version: str = _[:-10]
     
     return version
 
@@ -16,6 +18,8 @@ def GetVersionForEditor():
     for _ in English_Edition_logsForEditor.split('\n'):
         if _.endswith(' Version:'):
             version: str = _[:-9]
+        elif _.endswith(' Version:\r'):
+            version: str = _[:-10]
     
     return version
 
@@ -25,5 +29,7 @@ def GetVersion(EditionLogs: str) -> str:
     for _ in EditionLogs.split('\n'):
         if _.endswith(' Version:'):
             version: str = _[:-9]
+        elif _.endswith(' Version:\r'):
+            version: str = _[:-10]
     
     return version

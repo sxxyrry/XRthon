@@ -161,23 +161,38 @@ _indev标记：表达是否是正在开发版，可以不加
         return 0
 
     @staticmethod
-    def JudgeVersion_Greater(Version1: str, Version2: str) -> bool | NoReturn:
-        NV1 = VersionSystem.GetNumberVersion(Version1).split('.')
-        NV2 = VersionSystem.GetNumberVersion(Version2).split('.')
+    def JudgeVersion_Greater(Version1: str, Version2: str) -> bool:
+        try:
+            NV1 = VersionSystem.GetNumberVersion(Version1).split('.')
+            NV2 = VersionSystem.GetNumberVersion(Version2).split('.')
+        except:
+            del___pycache__()
+            return False
+        
         del___pycache__()
         return VersionSystem.CompareVersions(NV1, NV2) > 0
         
     @staticmethod
     def JudgeVersion_Less(Version1: str, Version2: str) -> bool | NoReturn:
-        NV1 = VersionSystem.GetNumberVersion(Version1).split('.')
-        NV2 = VersionSystem.GetNumberVersion(Version2).split('.')
+        try:
+            NV1 = VersionSystem.GetNumberVersion(Version1).split('.')
+            NV2 = VersionSystem.GetNumberVersion(Version2).split('.')
+        except:
+            del___pycache__()
+            return False
+        
         del___pycache__()
         return VersionSystem.CompareVersions(NV1, NV2) < 0
     
     @staticmethod
     def JudgeVersion_Equal(Version1: str, Version2: str) -> bool | NoReturn:
-        NV1 = VersionSystem.GetNumberVersion(Version1).split('.')
-        NV2 = VersionSystem.GetNumberVersion(Version2).split('.')
+        try:
+            NV1 = VersionSystem.GetNumberVersion(Version1).split('.')
+            NV2 = VersionSystem.GetNumberVersion(Version2).split('.')
+        except:
+            del___pycache__()
+            return False
+        
         del___pycache__()
         return VersionSystem.CompareVersions(NV1, NV2) == 0
 

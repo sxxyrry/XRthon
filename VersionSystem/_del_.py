@@ -1,4 +1,4 @@
-import shutil, threading, os
+import shutil, os
 import time
 
 

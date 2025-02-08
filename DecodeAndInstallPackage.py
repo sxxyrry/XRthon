@@ -3,6 +3,7 @@ import os, base64, py7zr, yaml, shutil
 from folder import folder
 from ConfigType import Config
 
+
 class ManyError(BaseException):
     def __init__(self, *args: object):
         super().__init__(*args)
