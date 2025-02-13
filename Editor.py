@@ -26,7 +26,6 @@ from PluginAPI import (
     parent,
     Up,
     Bottom,
-    notebook,
     config,
     GetVersionForEditionLogs_Plugin,
     GetVersion,
@@ -58,7 +57,7 @@ It is made by '是星星与然然呀' （由 '是星星与然然呀' 制作）
 
 AUT = '''\
 是星星与然然呀：Contact information （联系方式） (QQ)：3771386319
-LoveProgramming：Contact information （联系方式） (BiliBili)：https://space.bilibili.com/3493125991434836?spm_id_from=333.999.0.0
+LoveProgramming：Contact information （联系方式） (163 Email （邮箱）)：sxxyrry_23XR@163.com
 
 Sponsorship link （赞助链接） :
 https://ifdian.net/order/create?plan_id=b2d954aa5c7711ef8af952540025c377&product_type=0&remark=\
@@ -77,6 +76,7 @@ else:
 class Editor():
     def __init__(self):
         self.frames: list[tuple[tk.Frame, Liner]] = frames
+        self.framesInfo: list[tk.Frame] = []
         self.frame_id = -1
         self.i = 0
         self.Now_frame_id = 0
@@ -130,6 +130,9 @@ class Editor():
                 "Updata Plugin",
                 "Are you sure you want to update the {} plugin?",
                 "Updata Plugin complete.",
+                "Help",
+                "Please take a look at the HowToUse file.",
+                "Test Program",
             ]
 
         if self.config.language == 'en':
@@ -176,6 +179,9 @@ class Editor():
                 "更新插件",
                 "确定更新{}插件吗？",
                 "更新插件完成。",
+                "帮助",
+                "请去看 HowToUse 文件。",
+                "测试程序",
             ]
         else:
             _EN()
@@ -210,20 +216,35 @@ class Editor():
         self.Up.add_cascade(label=self.texts[12], menu=self.Plugin_menu)
         # self.Up.add_command(label="Edition Logs", command=self.EditionLogsInterface)
         self.Up.add_cascade(label=self.texts[13], menu=self.EditionLogs_menu)
+        self.Up.add_command(label=self.texts[40], command=lambda :messagebox.showinfo(self.texts[40], self.texts[41]))
         if self.config.Mod == 'DEV':
             self.Up.add_command(label="Restart", command=self.Restart)
             self.Up.add_command(label="Toggle Theme", command=self.toggle_theme)
         self.Up.add_command(label=self.texts[22], command=self.switch_language)
         self.Up.add_command(label=self.texts[23], command=self.Introduction_Website)
         self.Up.add_command(label=self.texts[14], command=self.VersionInterface)
+        self.Up.add_command(label=self.texts[42], command=self.testPro)
         self.Up.add_command(label=self.texts[15], command=lambda: os._exit(0))
         
         self.root.config(menu=self.Up)
 
-        self.notebook = notebook
+        self.MainNotebook = CustomNotebook(self.parent)
+        self.MainNotebook.pack(fill=tk.BOTH, expand=True)
+
+        self.EditorNBFrame = tk.Frame(self.parent)
+        self.EditorNB = CustomNotebook(self.EditorNBFrame)
+        self.EditorNB.pack(fill=tk.BOTH, expand=True)
+
+        self.InfoNBFrame = tk.Frame(self.parent)
+        self.InfoNB = CustomNotebook(self.InfoNBFrame)
+        self.InfoNB.pack(fill=tk.BOTH, expand=True)
 
         self.Bottom.pack(side=tk.BOTTOM, fill=tk.X)
-        self.notebook.pack(fill=tk.BOTH, expand=True)
+        
+        self.MainNotebook.add(self.EditorNBFrame, text="Editor")
+        self.MainNotebook.add(self.InfoNBFrame, text="Info")
+        self.MainNotebook.protect_tab(0)
+        self.MainNotebook.protect_tab(1)
 
     def Introduction_Website(self):
         webbrowser.open('https://sxxyrry.github.io/XRthon_Project/')
@@ -255,13 +276,7 @@ class Editor():
         self.root.bind("<Control-o>", lambda event: self.open_file())
         self.root.bind("<Control-n>", lambda event: self.add_editor_page())
         self.root.bind("<Control-q>", lambda event: self.root.destroy())
-        self.root.bind("<Control-w>", lambda event: self.close_tab(self.notebook.index("current")))
         self.root.bind("<Control-S>", lambda event: self.save_all_files())
-
-    def close_tab(self, index):
-        if messagebox.askokcancel(self.texts[18], self.texts[19]):
-            self.notebook.forget(index)
-            del self.frames[index]
 
     def save_all_files(self):
         for i, (frame, line) in enumerate(self.frames):
@@ -285,7 +300,7 @@ class Editor():
                 line.config(bg="white", fg="black")
 
     def InstalledPluginsInterface(self):
-        _ = tkt.Tk(self.texts[7])
+        _ = tkt.Tk(title=self.texts[7])
 
         PluginsList: list[tuple[str, Literal['Enabled', 'Disabled']]] = GetInstalledPluginsList()
 
@@ -363,7 +378,7 @@ class Editor():
             return
 
     def AllPluginsInterface(self):
-        _ = tkt.Tk(self.texts[29])
+        _ = tkt.Tk(title=self.texts[29])
 
         PluginsList: list[str] = GetAllPlugins()
 
@@ -415,7 +430,7 @@ class Editor():
             return
 
     def VersionInterface(self):
-        _ = tkt.Tk(self.texts[14])
+        _ = tkt.Tk(title=self.texts[14])
 
         lable = tk.Label(_, text=f'{self.texts[14]}: {version}')
         lable.pack()
@@ -423,7 +438,7 @@ class Editor():
         _.mainloop()
 
     def AboutInterface(self):
-        _ = tkt.Tk(self.texts[5])
+        _ = tkt.Tk(title=self.texts[5])
 
         t = scrolledtext.ScrolledText(_, width=100, height=20)
         t.insert(tk.END, AT)
@@ -433,7 +448,7 @@ class Editor():
         _.mainloop()
 
     def AboutUsInterface(self):
-        _ = tkt.Tk(self.texts[6])
+        _ = tkt.Tk(title=self.texts[6])
 
         t = scrolledtext.ScrolledText(_, width=100, height=20)
         t.insert(tk.END, AUT)
@@ -443,7 +458,7 @@ class Editor():
         _.mainloop()
 
     def EditionLogsInterface_English(self):
-        _ = tkt.Tk(self.texts[13])
+        _ = tkt.Tk(title=self.texts[13])
 
         t = scrolledtext.ScrolledText(_, width=100, height=20)
         t.insert(tk.END, English_Edition_logsForEditor)
@@ -453,7 +468,7 @@ class Editor():
         _.mainloop()
 
     def EditionLogsInterface_Chinese(self):
-        _ = tkt.Tk('版本记录')
+        _ = tkt.Tk(title='版本记录')
 
         t = scrolledtext.ScrolledText(_, width=100, height=20)
         t.insert(tk.END, Chinese_Edition_logsForEditor)
@@ -492,25 +507,68 @@ class Editor():
 
         del runner
 
+    def OnCloseEditorPage(self, e: tk.Event):
+        widget: tk.Frame = e.widget # type: ignore
+
+        frames_ = [i[0] for i in self.frames]
+
+        self.frames.remove(self.frames[frames_.index(widget)])
+        self.i -= 1
+        self.frame_id -= 1
+
+    def OnCloseInfoPage(self, e: tk.Event):
+        widget: tk.Frame = e.widget # type: ignore
+
+        self.framesInfo.remove(self.framesInfo[self.framesInfo.index(widget)])
+
     def add_updater(self, frame, line):
-        self.Now_frame_id = self.frames.index((frame, line))
+        try:
+            self.Now_frame_id = self.frames.index((frame, line))
+        except ValueError:
+            self.Now_frame_id = self.frame_id
     
+    def add_info_page(self, title="Information", text="Information"):
+        frame = tk.Frame(self.root)
+
+        info_label = tk.Label(frame, text=text, wraplength=400, justify=tk.LEFT)
+        info_label.pack(fill="both", expand=True)
+
+        self.framesInfo.append(frame)
+
+        self.InfoNB.add(frame, text=title)
+        self.MainNotebook.select(1)
+        self.InfoNB.select(len(self.framesInfo) - 1)
+        if len(self.framesInfo) - 1 == 0:
+            self.InfoNB.protect_tab(0)
+
     def add_editor_page(self):
         frame = tk.Frame(self.root)
         line = Liner(frame)
         line.pack(fill="both", expand=True)
         self.frames.append((frame, line))
         frame.bind('<Visibility>', lambda event: self.add_updater(frame, line))
+        frame.bind('<<NotebookTabClosed>>', self.OnCloseEditorPage)
         if self.i == 0:
-            self.notebook.add(frame, text=f"XRthon{self.texts[24]}")
-            self.notebook.protect_tab(len(self.frames) - 1)
+            self.EditorNB.add(frame, text=f"XRthon{self.texts[24]}")
+            self.EditorNB.protect_tab(len(self.frames) - 1)
         else:
-            self.notebook.add(frame, text=f"XRthon{self.texts[24]} {self.i + 1}")
-            self.notebook.select(len(self.frames) - 1)
+            self.EditorNB.add(frame, text=f"XRthon{self.texts[24]} {self.i + 1}")
+        
+        self.MainNotebook.select(0)
+        self.EditorNB.select(len(self.frames) - 1)
         
         self.frame_id = len(self.frames) - 1
         self.i += 1
-        
+    
+    def testPro(self):
+        self.add_editor_page()
+
+        _ = self.frames[-1][1]
+        _.load_content('''\
+import(XRgame)
+XRgame.PlayMusic('./TestFiles/恭喜发财.mp3')
+''')
+
     def update(self):
         try:
             if self.root.wm_state() == "iconic":
@@ -526,18 +584,45 @@ class Editor():
     def pack(self):
         self.parent.pack(fill=tk.NONE, expand=True)
 
-
 def start():
     global root  # 确保使用全局的 root 变量
     # root = tkt.Tk("XRthon Editor")  # 创建新的主窗口
+
+    texts = []
+
+    def _EN():
+        texts = [
+            'Start Screen',
+            'We greatly appreciate your use of our program',
+        ]
+        return texts
+    
+    if config.language == 'en':
+        texts = _EN()
+    elif config.language == 'zh-cn':
+        texts = [
+            '启动界面',
+            '我们非常欢迎您使用我们的程序',
+        ]
+    else:
+        texts = _EN()
+
     editor = Editor()
     editor.pack()
+
     editor.add_editor_page()
+
+    editor.add_info_page(texts[0], texts[1])
 
     if len(sys.argv) == 2:
         editor.frames[editor.frame_id][1].load_content(open(sys.argv[1], 'r', encoding='UTF-8').read())
 
     LoadPlugins()
+
+    root.update()
+    editor.update()
+    
+    # messagebox.showinfo(texts[0], texts[1])
 
     try:
         while True:

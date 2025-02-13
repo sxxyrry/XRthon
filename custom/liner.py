@@ -86,7 +86,9 @@ class Liner(indrxer.IndexText):
         self.insert("1.0", content)  # 插入新内容
 
     def get_text(self):
-        return self.get("1.0", "end-1c")
+        _ = self.get("1.0", tk.END).split('\n')
+        _.pop()
+        return '\n'.join(_)
 
     def set_breakpoint(self, line_number):
         self.breakpoints.add(line_number)

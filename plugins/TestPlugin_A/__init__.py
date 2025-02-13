@@ -4,7 +4,6 @@ from ...PluginAPI import (
     parent,
     Up,
     Bottom,
-    notebook,
     tk,
     JudgeVersion_Equal_Plugin,
     JudgeVersion_Greater_Plugin,

@@ -1,74 +1,42 @@
 import os, pathlib, time, traceback
 from typing import Literal, Any, TypedDict
 from io import TextIOWrapper
+from enum import IntEnum, StrEnum
 
 
 folder = pathlib.Path(__file__).parent.resolve()
 
-# _namelist = []
+class IntLevel(IntEnum):
+    DEBUG = 4
+    INFO = 3
+    WARING = 2
+    ERROR = 1
+    CRITICAL = 0
 
-DEBUG = 'DEBUG'
-INFO = 'INFO'
-WARING = 'WARING'
-ERROR = 'ERROR'
-CRITICAL = 'CRITICAL'
+class StrLevel(StrEnum):
+    DEBUG = 'DEBUG'
+    INFO = 'INFO'
+    WARING = 'WARING'
+    ERROR = 'ERROR'
+    CRITICAL = 'CRITICAL'
 
-_DEBUG = 4
-_INFO = 3
-_WARING = 2
-_ERROR = 1
-_CRITICAL = 0
+IntlevelToStrLevel = {
+    IntLevel.DEBUG     :  StrLevel.DEBUG,
+    IntLevel.INFO      :  StrLevel.INFO,
+    IntLevel.WARING    :  StrLevel.WARING,
+    IntLevel.ERROR     :  StrLevel.ERROR,
+    IntLevel.CRITICAL  :  StrLevel.CRITICAL,
+}
 
-_levellist: list[
-                    Literal[
-                            0,
-                            1,
-                            2,
-                            3,
-                            4
-                            ]
-                    ]\
-                    = \
-                    [
-                        _DEBUG     ,
-                        _INFO      ,
-                        _WARING    ,
-                        _ERROR     ,
-                        _CRITICAL  ,
-                    ]
-
-_leveltable: dict[
-                    Literal[
-                            0,
-                            1,
-                            2,
-                            3,
-                            4,
-                        ],
-                    Literal[
-                            'DEBUG',
-                            'INFO',
-                            'WARING',
-                            'ERROR',
-                            'CRITICAL',
-                            ]
-                    ]\
-                    = \
-                    {
-                        _DEBUG     :  DEBUG,
-                        _INFO      :  INFO,
-                        _WARING    :  WARING,
-                        _ERROR     :  ERROR,
-                        _CRITICAL  :  CRITICAL,
-                    }
+StrlevelToIntLevel = {v: k for k, v in IntlevelToStrLevel.items()}
 
 class unexeceventClass(TypedDict):
-    level: Literal['DEBUG', 'INFO', 'WARING', 'ERROR', 'CRITICAL']
+    level: StrLevel
     message: str
     time: str
 
 class execeventClass(TypedDict):
-    level: Literal['DEBUG', 'INFO', 'WARING', 'ERROR', 'CRITICAL']
+    level: StrLevel
     message: str
     time: str
 
@@ -80,7 +48,7 @@ class log():
         _nametable[name] = self
         self.name = name
 
-        self.level = _WARING
+        self.level = IntLevel.WARING
         self.format = '{time} - {level} - {name} : {message}'
 
         self.isusefile: bool = False
@@ -104,36 +72,57 @@ class log():
     
         self.unexeceventslist: list[unexeceventClass] = []
 
-    def config(self, level: Literal['DEBUG', 'INFO', 'WARING', 'ERROR', 'CRITICAL']='WARING',
-               format: str='XR - {time} - {level} - {name} : {message}',
-                isusefile: bool=False, filepath: str | None=None,
-                filemode: Literal['cf', 'w'] | None='cf', isuseconsole: bool=True):
+    def config(self, level: StrLevel | None=None,
+               format: str | None=None,
+                isusefile: bool | None=None, filepath: str | None=None,
+                filemode: Literal['cf', 'w'] | None=None, isuseconsole: bool | None=True):
 
-        __a: dict[
-                Literal['DEBUG', 'INFO', 'WARING', 'ERROR', 'CRITICAL'],
-                Literal[0, 1, 2, 3, 4]
-                ] = {j : i for i, j in _leveltable.items()}
+        # 'XR - {time} - {level} - {name} : {message}'
 
-        if not __a[level] in _levellist:
-            self.__ie('levelisnotexists')
-
-        self.level: Literal[0, 1, 2, 3, 4] = __a[level]
-
-        if \
-            not '{time}' in format or \
-            not '{level}' in format or \
-            not '{name}' in format or \
-            not '{message}' in format\
-            :
-            self.__ie('invalidformat')
+        if level is not None:
+            if not level in StrlevelToIntLevel.keys():
+                self.__ie('levelisnotexists')
+            else:
+                self.level = StrlevelToIntLevel[level]
+        else:
+            self.level = self.level if self.level else IntLevel.WARING
         
-        self.format: str = format
+        if format is not None:
+            if \
+                not '{time}' in format or \
+                not '{level}' in format or \
+                not '{name}' in format or \
+                not '{message}' in format\
+                :
+                self.__ie('invalidformat')
+            else:
+                self.format: str = format
+        else:
+            self.format: str = self.format if self.format else 'XR - {time} - {level} - {name} : {message}'
+        
+        if isusefile is not None:
+            if not isinstance(isusefile, bool):
+                self.__ie('isusefileisnotbool')
+            else:
+                self.isusefile = isusefile
+        else:
+            self.isusefile = self.isusefile if self.isusefile else False
 
-        self.isusefile: bool = isusefile
+        if isuseconsole is not None:
+            if not isinstance(isuseconsole, bool):
+                self.__ie('isuseconsoleisnotbool')
+            else:
+                self.isuseconsole = isuseconsole
+        else:
+            self.isuseconsole = self.isuseconsole if self.isuseconsole else True
 
-        self.isuseconsole: bool = isuseconsole
-
-        self.filemode: Literal['cf', 'w'] | None = filemode or 'w'
+        if filemode is not None:
+            if not filemode in ['cf', 'w']:
+                self.__ie('invalidfilemode')
+            else:
+                self.filemode = filemode
+        else:
+            self.filemode = self.filemode if self.filemode else 'cf'
 
         if self.isusefile:
             if filepath is None:
@@ -199,10 +188,10 @@ class log():
         #     return log(name)
         return log(name)
 
-    def __log(self, level: Literal[0, 1, 2, 3, 4], message: str):
+    def __log(self, level: IntLevel, message: str):
         text = self.format.format(time=time.strftime('%Y-%m-%d %H:%M:%S',
                                                             time.localtime()),
-                                        level=_leveltable[level],
+                                        level=IntlevelToStrLevel[level],
                                         name=self.name,
                                         message=message)
         if self.isusefile:
@@ -213,37 +202,37 @@ class log():
         if self.isuseconsole:
             print(text)
         else:
-            self.unexeceventslist.append({'level' : _leveltable[level], 'message' : text, 'time' : time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())})
+            self.unexeceventslist.append({'level' : IntlevelToStrLevel[level], 'message' : text, 'time' : time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())})
 
-        self.eventslist.append({'level' : _leveltable[level], 'message' : text, 'time' : time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())})
+        self.eventslist.append({'level' : IntlevelToStrLevel[level], 'message' : text, 'time' : time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())})
 
     def debug(self, message: str):
-        if self.level >= _DEBUG:
-            self.__log(_DEBUG, message)
+        if self.level >= IntLevel.DEBUG:
+            self.__log(IntLevel.DEBUG, message)
         else:
             pass
     
     def info(self, message: str):
-        if self.level >= _INFO:
-            self.__log(_INFO, message)
+        if self.level >= IntLevel.INFO:
+            self.__log(IntLevel.INFO, message)
         else:
             pass
 
     def warning(self, message: str):
-        if self.level >= _WARING:
-            self.__log(_WARING, message)
+        if self.level >= IntLevel.WARING:
+            self.__log(IntLevel.WARING, message)
         else:
             pass
     
     def error(self, message: str):
-        if self.level >= _ERROR:
-            self.__log(_ERROR, message)
+        if self.level >= IntLevel.ERROR:
+            self.__log(IntLevel.ERROR, message)
         else:
             pass
 
     def critical(self, message: str):
-        if self.level >= _CRITICAL:
-            self.__log(_CRITICAL, message)
+        if self.level >= IntLevel.CRITICAL:
+            self.__log(IntLevel.CRITICAL, message)
         else:
             pass
 
@@ -256,8 +245,6 @@ class log():
 
         self.error(f"Exception occurred: \n{exc_info}")
 
-
-
     def exit(self):
         if self.name == 'root':
             return
@@ -267,12 +254,14 @@ class log():
 
     def __ie(self, error: str):
         table: dict[str, str] = {
-                                    'nameisexists'        :  'name is exists',
-                                    'errorisnotexists'    :  'error is not exists',
-                                    'levelisnotexists'    :  'level is not exists',
-                                    'invalidformat'       :  'format is invalid',
-                                    'fileisnotexists'     :  'file is not exists',
-                                    'invalidfilemode'     :  'filemode is invalid',
+                                    'nameisexists'           :  'name is exists',
+                                    'errorisnotexists'       :  'error is not exists',
+                                    'levelisnotexists'       :  'level is not exists',
+                                    'invalidformat'          :  'format is invalid',
+                                    'isusefileisnotbool'     :  'isusefile is not a Boolean value',
+                                    'isuseconsoleisnotbool'  :  'isuseconsole is not a Boolean value',
+                                    'fileisnotexists'        :  'file is not exists',
+                                    'invalidfilemode'        :  'filemode is invalid',
                                     # 'fileobjisnotexists'  :  'file object is not exists',
                                 }
         if ' ' in error:
@@ -334,15 +323,19 @@ def get_exception(exc_info=None):
 def get_log(name: str):
     return root_log.get_log(name)
 
-def config(level: Literal['DEBUG', 'INFO', 'WARING', 'ERROR', 'CRITICAL']='WARING',
-            format: str='XR - {time} - {level} - {name} : {message}',
-            isusefile: bool=False, filepath: str | None=None,
-            filemode: Literal['cf', 'w'] | None='cf', isuseconsole: bool=True):
+def config(
+    level: StrLevel | None=None,
+    format: str | None=None,
+    isusefile: bool | None=None, filepath: str | None=None,
+    filemode: Literal['cf', 'w'] | None=None, isuseconsole: bool | None=True
+):
     root_log.config(level=level, format=format, isusefile=isusefile, filepath=filepath, filemode=filemode, isuseconsole=isuseconsole)
 
-def basicconfig(level: Literal['DEBUG', 'INFO', 'WARING', 'ERROR', 'CRITICAL']='WARING',
-                format: str='XR - {time} - {level} - {name} : {message}',
-                isusefile: bool=False, filepath: str | None=None,
-                filemode: Literal['cf', 'w'] | None='cf', isuseconsole: bool=True):
+def BasicConfig(
+    level: StrLevel | None=None,
+    format: str | None=None,
+    isusefile: bool | None=None, filepath: str | None=None,
+    filemode: Literal['cf', 'w'] | None=None, isuseconsole: bool | None=True
+):
     for log in _nametable.values():
         log.config(level=level, format=format, isusefile=isusefile, filepath=filepath, filemode=filemode, isuseconsole=isuseconsole)

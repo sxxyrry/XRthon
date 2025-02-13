@@ -1,4 +1,3 @@
-from custom.CustomNotebook import CustomNotebook
 from custom.liner import Liner
 import tkinter as tk, tkintertools as tkt, pathlib, json, yaml
 from tkinter import filedialog, messagebox, scrolledtext
@@ -33,12 +32,11 @@ from colorama import Fore, Style, init
 
 LoadedPluginsList: list[str] = []
 FolderPath = pathlib.Path(os.path.join(pathlib.Path(__file__).parent.resolve(), './plugins/')).resolve()
-root = tkt.Tk("XRthon Editor")
+root = tkt.Tk(title="XRthon Editor")
 frames: list[tuple[tk.Frame, Liner]] = []
 parent = tk.Frame(root)
 Up = tk.Menu(parent)
 Bottom = tk.Frame(parent)
-notebook = CustomNotebook(parent)
 config = Config()
 
 def FindPlugin(plugin_name: str) -> bool:

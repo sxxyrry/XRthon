@@ -36,3 +36,19 @@ B--0--0.1--_indev--2025*2*2 版本：
     优化版本记录
     HowToUse 变得更详细
     在帮助文本中增加了 quit()
+B--0--0.1--_indev--2025*2*3 版本：
+    增加 
+        定义函数
+        运行自定义函数
+        内置 Python 解释器
+    在帮助文本中增加了
+        定义函数
+        函数调用
+        内置 Python 解释器
+
+    更新使用到的 log 库
+    增加 requirements.txt
+    更新 README.md
+    删除
+        HowToUse.md
+        HowToUse.txt

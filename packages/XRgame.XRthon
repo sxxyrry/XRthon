@@ -1,0 +1,12 @@
+python {}:
+    import pygame
+END python {}:
+
+def_func PlayMusic{FilePath}:
+    python {FilePath}:
+        import pygame
+        pygame.mixer.init()
+        pygame.mixer.music.load(FilePath)
+        pygame.mixer.music.play()
+    END python {FilePath}:
+END def_func PlayMusic{FilePath}:

@@ -1,5 +1,6 @@
 import tkinter.ttk as ttk
 import tkinter as tk
+from typing import Self
 
 
 class CustomNotebook(ttk.Notebook):
@@ -9,7 +10,10 @@ class CustomNotebook(ttk.Notebook):
 
     def __init__(self, *args, **kwargs):
         if not self.__initialized:
-            self.__initialize_custom_style()
+            try:
+                self.__initialize_custom_style()
+            except tk.TclError:
+                pass
             self.__initialized = True
             self._protected_indices = set()
 
@@ -42,6 +46,8 @@ class CustomNotebook(ttk.Notebook):
             else:
                 self.state(['pressed'])
                 self._active = index
+                frame: tk.Frame = self.nametowidget(self.tabs()[index])
+                frame.event_generate("<<NotebookTabClosed>>")
 
     def on_close_release(self, event):
         """Called when the button is released over the close button"""
@@ -53,10 +59,15 @@ class CustomNotebook(ttk.Notebook):
 
         if "close" in element and self._active == index:
             self.forget(index)
-            self.event_generate("<<NotebookTabClosed>>")
 
         self.state(["!pressed"])
         self._active = None
+
+    # def add(self, page: tk.Frame, text: str, sticky="ew", **kwargs):
+    #     self.frames.append(page)
+    #     # ttk.Notebook.add(self, page, text=text, sticky=sticky, **kwargs)
+    #     self.add_(page, text=text, sticky=sticky, **kwargs)
+    #     self.update()
 
     def __initialize_custom_style(self):
         style = ttk.Style()

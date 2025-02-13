@@ -1,4 +1,4 @@
-import os 
+import os
 from folder import folder
 from types import NoneType
 from typing import Any, TypedDict
@@ -297,67 +297,34 @@ class Function():
                 self.name
             )
         
-        globals_ = {self.args[i]: args[i] for i in range(len(self.args))}
+        globals_ = {
+            self.args[i]: {
+                'value' :  args[i],
+                'type'  :  type(args[i]).__name__,
+                'len'   :  len(str(args[i])),
+            } for i in range(len(self.args))
+        }
 
         if self.isBuiltins == True:
             exec(f'{self.body[0]}', globals=globals_)
         else:
-            runner = Runner(self.name)
+            runner = Runner(self.name, function=True)
             self.env.set_values(globals_)
             runner.environment = self.env
-            runner.run_fortexts(self.body[0], None)
+            runner.raiser = self.raiser
+            texts = '\n'.join(self.body)
+            runner.run_fortexts(texts, None)
     
     def __repr__(self) -> str:
         return f'<Function {self.name}-{self.args}-isBuiltins={self.isBuiltins}>'
 
 class Runner():
-    def __init__(self, EnvironmentName: str, *, config: configType={'ContinueRunningAfterError': False}):
+    def __init__(self, EnvironmentName: str, *, config: configType={'ContinueRunningAfterError': False}, function: bool=False):
         self.raiser = Raiser
         self.environment = Environment(EnvironmentName, {})
         self.EnvironmentName = EnvironmentName
-        '''
-            'print',
-    'input',
-    'import',
-    'quit','''
         self.environment.set_values(
             {
-                'print' : {
-                    'value' : Function(
-                        'print',
-                        ['value'],
-                        ['...'],
-                        True,
-                        0,
-                        'def print(value): ...'
-                    ),
-                    'type': Function(
-                        'print',
-                        ['value'],
-                        ['...'],
-                        True,
-                        0,
-                        'def print(value): ...'
-                    ),
-                },
-                'input' : {
-                    'value' : Function(
-                        'input',
-                        ['value'],
-                        ['...'],
-                        True,
-                        0,
-                        'def input(value): ...'
-                    ),
-                    'type': Function(
-                        'input',
-                        ['value'],
-                        ['...'],
-                        True,
-                        0,
-                        'def input(value): ...'
-                    ),
-                },
                 'Kernel' : {
                     'value' : {
                         'Name' : KernelName,
@@ -366,10 +333,11 @@ class Runner():
                     # 'type' : {
 
                     # }
-                }
+                },
             }
         )
-        Environments.update({EnvironmentName : self.environment})
+        if not function:
+            Environments.update({EnvironmentName : self.environment})
         self.config = config
         # self.from_ = from_
 
@@ -393,10 +361,10 @@ class Runner():
     def run_forlinetext(self, linetext: str, alltextlist: list[str], path: str | None = None, number: int = 1):
         try:
             linetext = '#'.join(linetext.split('#')[0:-1]) if '#' in linetext else linetext
-            
+
             if 'END' in linetext:
                 return
-                
+
             # elif 'def_function' in linetext:
             #     name: str = linetext.split('(')[0][11:][-1]
             #     args: list[str] = linetext.split('(')[1].split(')')[0].split(',')
@@ -450,12 +418,92 @@ class Runner():
             elif '(' in linetext:
                 Functions.FunctionsLogic(self, linetext, number, path if not path is None else '<String>')
 
+            else:
+                Keys.KeysLogic(self, linetext, number, path if not path is None else '<String>', alltextlist)
+
             Environments[self.EnvironmentName] = self.environment
         except KeyboardInterrupt as e:
             print('^C\n', end='')
             root.raiser('KeyboardInterrupt', 'User pressed Ctrl+C', 1, '^C', path if not path is None else '<String>', e) # type: ignore
         except EOFError as e:
             root.raiser('EOFError', 'User pressed Ctrl+V', 1, '^V', path if not path is None else '<String>', e)
+
+class Keys():
+    @staticmethod
+    def KeysLogic(clsobj: Runner, linetext: str, number: int, path: str, alltexts: list[str], name: str | None=None):
+        if linetext.startswith('def_func'):
+            name = linetext.split('{')[0][9:]
+            args = linetext.split('{')[1][0:-2].replace(' ', '').split(',')
+
+            body = []
+            try:
+                exec(f'def {name}({','.join(args)}):pass')
+            except Exception as e:
+                clsobj.raiser('SyntaxError', 'Syntax Error', number, linetext, path if not path is None else '<String>', e, clsobj.config)
+        
+            i = number
+
+            while 1:
+                lt = alltexts[i]
+
+                if lt.startswith('END'):
+                    if lt == f'END {linetext}':
+                        break
+
+                body.append(lt[4:])
+
+                i += 1
+            
+            clsobj.environment.set_values(
+                {
+                    name : 
+                    {
+                        'value': 
+                            Function(
+                                name, args, body, False, number, linetext
+                            ),
+                        'len' : len(body),
+                        'type' : 'function'
+                    }
+                }
+            )
+
+        elif linetext.startswith('python'):
+            args_: list[str] = linetext.split('{')[1][:-2].replace(' ', '').split(',')
+            if args_ == ['']:
+                args_ = []
+            
+            args = {}
+
+            for arg in args_:
+                if arg in clsobj.environment.values:
+                    args.update({arg : clsobj.environment.values[arg]['value']})
+                else:
+                    clsobj.raiser('NameError', 'Name Error', number, linetext, path if not path is None else '<String>', config=clsobj.config)
+
+            body = []
+            try:
+                exec(f'def test({','.join(args)}):pass')
+            except Exception as e:
+                clsobj.raiser('SyntaxError', 'Syntax Error', number, linetext, path if not path is None else '<String>', e, clsobj.config)
+            
+            i = number
+
+            while 1:
+                lt = alltexts[i]
+
+                if lt.startswith('END'):
+                    if lt == f'END {linetext}':
+                        break
+
+                body.append(lt[4:])
+
+                i += 1
+            
+            try:
+                exec('\n'.join(body), args)
+            except Exception as e:
+                clsobj.raiser(e.__class__.__name__, str(e), number, linetext, path if not path is None else '<String>', e, clsobj.config)
 
 class Functions():
     @staticmethod
@@ -560,7 +608,6 @@ class Functions():
                 
             elif p in Environments.keys():
                 clsobj.environment.set_values({p : {'value' : Environments[p].values}})
-                print(clsobj.environment.values)
             
             else:
                 root.raiser('NameError', 'Name is not defined', number, linetext, path if not path is None else '<String>', config=root.config)
@@ -578,15 +625,55 @@ class Functions():
         elif linetext.split('(')[0].startswith('type'):
             pass
 
-        elif linetext.split('(')[0].startswith('def_function'):
-            name = linetext[13:][:-1]
+        elif linetext.split('(')[0] in clsobj.environment.values.keys():
+            # type: ignore
+            name = linetext.split('(')[0]
+            _= clsobj.environment.values[name]
+            func: Function = _['value'] # type: ignore
+            if not isinstance(func, Function):
+                clsobj.raiser('TypeError', f'The name \'{func}\' is not a function', number, linetext, path if not path is None else '<String>', config=root.config)
+
+            args_: list[str] = linetext.split('(')[1][:-1].replace(' ', '').split(',')
+            if args_ == ['']:
+                args_ = []
+            
+            args = []
+
+            for arg in args_:
+                tle = Variable.VariableLogic(clsobj, arg, number, linetext, path if not path is None else '<String>')
+
+                arg = tle[0]
+
+                args.append(arg)
+
+            func.run(args)
+
             v = 'None'
 
-        elif linetext.split('(')[0] in clsobj.environment.values.keys():
-             # type: ignore
             pass
 
         else:
+            if '.' in linetext.split('(')[0]:
+                if linetext.startswith(' '):
+                    return
+                _ = Variable.VariableLogic(clsobj, linetext.split('(')[0], number, linetext, path if not path is None else '<String>')
+                if _[1] == 'function':
+                    args_ = linetext.split('(')[1][:-1].replace(' ', '').split(',')
+                    if args_ == ['']:
+                        args_ = []
+
+                    args = []
+
+                    for arg in args_:
+                        tle = Variable.VariableLogic(clsobj, arg, number, linetext, path if not path is None else '<String>')
+
+                        arg = tle[0]
+
+                        args.append(arg)
+
+                    func: Function = _[0] # type: ignore
+
+                    func.run(args) # type: ignore
             v = 'None'
 
         v = f'\'{v}\''.replace('\\', '\\\\')
@@ -671,34 +758,7 @@ class Variable():
     def VariableLogic(clsobj: Runner, value: object, number: int, linetext: str, path: str):
         type_ = None # type: ignore
         
-        value = str(value)
-        if '.' in value:
-            try:
-                value = float(value)
-                type_ = Float(value, number, linetext, path)
-            except:
-                parts = str(value).split('.')
-                name = parts[0]
-                attr_path = '.'.join(parts[1:])
-            
-                # 获取环境中的对象
-                obj = clsobj.environment.values[name]['value']
-                
-                # 逐层获取属性或方法
-                attr = obj
-                for part in attr_path.split('.'):
-                    _ = attr[part]
-                    attr = _['value'] if isinstance(_, dict) else _
-                
-                # 执行属性或方法
-                # if callable(attr):
-                #     result = attr()
-                # else:
-                result = attr['value'] if isinstance(attr, dict) and 'value' in attr else attr
-                # type_ = attr['type']
-                
-                return result, type_, False
-        else:
+        def _a(value: str):
             if (value.startswith('"') and value.endswith('"')) \
                or (value.startswith('\'') and value.endswith('\'')):
                 value = value[1:-1]
@@ -706,7 +766,9 @@ class Variable():
 
             else:
                 try:
-                    value = '' if value == '' else eval(value) if value not in clsobj.environment.values.keys() else clsobj.environment.values[value]['value']
+                    value = '' if value == '' else eval(value) \
+                        if value not in clsobj.environment.values.keys() else \
+                            clsobj.environment.values[value]['value'] # type: ignore
 
                     t = type(value)
 
@@ -725,6 +787,43 @@ class Variable():
                                 e,
                                 root.config
                             )
+            
+            return value, type_
+
+        value = str(value)
+        if '.' in value:
+            try:
+                value = float(value)
+                type_ = Float(value, number, linetext, path)
+            except:
+                parts = str(value).split('.')
+                name = parts[0]
+                attr_path = '.'.join(parts[1:])
+
+                # 获取环境中的对象
+                if name not in clsobj.environment.values.keys(): # type: ignore
+                    value, type_ = _a(value) # type: ignore
+                    return value, type_, False
+                obj = clsobj.environment.values[name]['value']
+                
+                # 逐层获取属性或方法
+                attr = obj
+                for part in attr_path.split('.'):
+                    _ = attr[part] # type: ignore
+                    type_ = _['type'] if isinstance(_, dict) and ('type' in _) else Nonetype(None)
+                    attr = _['value'] if isinstance(_, dict) else _
+                
+                # 执行属性或方法
+                # if callable(attr):
+                #     result = attr()
+                # else:
+                result = attr['value'] if isinstance(attr, dict) and 'value' in attr else attr
+                # type_ = attr['type']
+                
+
+                return result, type_, False
+        else:
+            value, type_ = _a(value)
         
         return value, type_
 

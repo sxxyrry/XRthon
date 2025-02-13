@@ -97,6 +97,17 @@ Use "name = value" to set a variable.
 Use "name = input()" to get input.
 Use "import()" to import a module.
 Use "quit()" to end the run of your program.
+Use "
+def_func name{args}:
+    # Code
+END def_func name{args}:
+" to create a function named 'name' and has arguments 'args'.
+Use "name(args)" to run a function named 'name' and has arguments 'args'.
+Use "
+python {args}:
+    # Python Code
+END python {args}:
+" to create and run a python code, and has arguments 'args' (Tips: The 'args' parameter is defined earlier).
 \
 '''
                 print(text)

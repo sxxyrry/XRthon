@@ -27,3 +27,6 @@ B--0--0.1--_indev--2025*2*2 Version:
     Added plugin update detection and update plugins
     Modificationed of development mode file (now the Mod key in the config/mod. YAML file, with a value of DEV indicating development mode and a value of NAL indicating normal mode)
     Fixed bugs
+B--0--0.1--_indev--2025*2*3 Version:
+    Added test code
+    Added XRgame library

@@ -36,3 +36,20 @@ B--0--0.1--_indev--2025*2*2 Version:
     Optimized version records
     HowToUse becomed more detailed
     Added quit() in the help text
+B--0--0.1--_indev--2025*2*3 Version:
+    Increased
+        Define function
+        Run custom functions
+        Built in Python interpreter
+
+    Added in the help text
+        Define function
+        function call
+        Built in Python interpreter
+
+    Updated the log library used
+    Added requirements. txt
+    Updated README.md
+    deleted
+        HowToUse.md
+        HowToUse.txt

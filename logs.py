@@ -9,4 +9,4 @@ Runner_log = log.log('Runner')
 
 Warning_log = log.log('Warning')
 
-log.basicconfig(level=log.DEBUG, format='{time} - {level} - {name} : {message}')
+log.BasicConfig(level=log.StrLevel.DEBUG, format='{time} - {level} - {name} : {message}')
