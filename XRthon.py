@@ -108,6 +108,11 @@ python {args}:
     # Python Code
 END python {args}:
 " to create and run a python code, and has arguments 'args' (Tips: The 'args' parameter is defined earlier).
+Use "
+if {1}:
+    # Code
+END if {1}:
+" to create a if statement (1 is an expression that can be replaced with another expression).
 \
 '''
                 print(text)

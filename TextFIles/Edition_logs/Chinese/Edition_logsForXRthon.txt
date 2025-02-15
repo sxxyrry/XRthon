@@ -52,3 +52,5 @@ B--0--0.1--_indev--2025*2*3 版本：
     删除
         HowToUse.md
         HowToUse.txt
+B--0--0.1--_indev--2025*2*4 版本：
+    增加版权信息

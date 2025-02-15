@@ -1,3 +1,33 @@
+# XRthon 项目
+
+## 版权声明  XRthon 项目由 是星星与然然呀 开发并维护。
+
+## 本项目遵循 GNU General Public License v3.0 许可证。
+
+- **版权所有**：© 2025 by sxxyrry_23XR
+- **许可证**：GNU GPL v3.0
+- **更多信息**：请参阅 [LICENSE](https://github.com/sxxyrry/XRthon/blob/main/LICENSE) 文件
+
+## 联系方式  如果您有任何问题或需要进一步的信息，请通过以下方式联系我们：
+
+- **联系邮箱**：sxxyrry_23XR@163.com
+- **GitHub**：[项目链接](https://github.com/sxxyrry/XRthon)
+
+# XRthon Project
+
+## Copyright Notice: The XRthon project is developed and maintained by 是星星与然然呀.
+
+## This project follows the GNU General Public License v3.0 license.
+
+- **Copyright**：© 2025 by sxxyrry_23XR
+- **licence**：GNU GPL v3.0
+- **More information**：Please refer to the [LICENSE](https://github.com/sxxyrry/XRthon/blob/main/LICENSE) document
+
+## If you have any questions or need further information, please contact us through the following methods:
+
+- **Contact Email**：sxxyrry_23XR@163.com
+- **GitHub**：[Project Link](https://github.com/sxxyrry/XRthon)
+
 # 中文
 
 ## 使用
@@ -59,6 +89,16 @@ END python {args}:
 ```
 
 #### ”创建和运行python代码，并具有参数‘args’（提示：‘args’参数已在前面定义）。
+
+#### 使用 “
+
+```XRthon
+if {1}:
+    # Code
+END if {1}:
+```
+
+#### ” 去创建 if 语句 （1是可以用另一个表达式替换的表达式）。
 
 ### 怎么运行 XRthon 代码？
 
@@ -162,6 +202,15 @@ END python {args}:
 
 #### " to create and run a python code, and has arguments 'args' (Tips: The 'args' parameter is defined earlier).
 
+#### Use "
+
+```XRthon
+if {1}:
+    # Code
+END if {1}:
+```
+
+#### " to create a if statement (1 is an expression that can be replaced with another expression).
 ### How to Run XRthon Code?
 
 #### Files

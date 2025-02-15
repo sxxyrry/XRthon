@@ -8,7 +8,7 @@ from ...PluginAPI import (
 )
 
 def a():
-    _ = tkt.Tk('TestPlugin')
+    _ = tkt.Tk(title='TestPlugin')
 
     t = tk.Label(_, text='TestPlugin')
     t.pack()

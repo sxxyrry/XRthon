@@ -28,18 +28,60 @@ from config import Config
 import os
 import sys
 from colorama import Fore, Style, init
+from custom.CustomNotebook import CustomNotebook
 
 
 LoadedPluginsList: list[str] = []
 FolderPath = pathlib.Path(os.path.join(pathlib.Path(__file__).parent.resolve(), './plugins/')).resolve()
 root = tkt.Tk(title="XRthon Editor")
 frames: list[tuple[tk.Frame, Liner]] = []
+framesInfo: list[tk.Frame] = []
 parent = tk.Frame(root)
 Up = tk.Menu(parent)
 Bottom = tk.Frame(parent)
 config = Config()
 
+MainNotebook = CustomNotebook(parent)
+MainNotebook.pack(fill=tk.BOTH, expand=True)
+
+EditorNBFrame = tk.Frame(parent)
+EditorNB = CustomNotebook(EditorNBFrame)
+EditorNB.pack(fill=tk.BOTH, expand=True)
+
+InfoNBFrame = tk.Frame(parent)
+InfoNB = CustomNotebook(InfoNBFrame)
+InfoNB.pack(fill=tk.BOTH, expand=True)
+
+def AddInfoPage(title="Information", text="Information"):
+    '''
+    增加信息页面
+
+    :param: title 标题
+    :param: text 文本
+
+    :return: None
+    '''
+    frame = tk.Frame(root)
+
+    info_label = tk.Label(frame, text=text, wraplength=400, justify=tk.LEFT)
+    info_label.pack(fill="both", expand=True)
+
+    framesInfo.append(frame)
+
+    InfoNB.add(frame, text=title)
+    MainNotebook.select(1)
+    InfoNB.select(len(framesInfo) - 1)
+    if len(framesInfo) - 1 == 0:
+        InfoNB.protect_tab(0)
+
 def FindPlugin(plugin_name: str) -> bool:
+    '''
+    寻找插件
+
+    :param: plugin_name 插件名
+
+    :return: bool 插件是否存在
+    '''
     if plugin_name in os.listdir(FolderPath):
         if os.path.isdir(os.path.join(FolderPath, plugin_name)):
             return True
@@ -49,6 +91,13 @@ def FindPlugin(plugin_name: str) -> bool:
         return False
 
 def GetEditionLogs_Plugin(plugin_name: str) -> str | NoReturn:
+    '''
+    获得插件的版本日志
+
+    :param: plugin_name 插件名
+
+    :return: str 版本日志 NoReturn 插件不存在或格式不正确
+    '''
     if FindPlugin(plugin_name):
         if os.path.isdir(os.path.join(FolderPath, plugin_name)):
             with open(os.path.join(FolderPath, plugin_name, './config.json'), 'r') as f:
@@ -67,19 +116,60 @@ def GetEditionLogs_Plugin(plugin_name: str) -> str | NoReturn:
         raise ValueError(f'Plugin is not found. ({plugin_name})')
 
 def GetVersionForEditionLogs_Plugin(plugin_name: str) -> str | NoReturn:
+    '''
+    从插件版本日志中获取版本
+
+    :param: plugin_name 插件名
+
+    :return: str 版本
+    :return: NoReturn 插件不存在或格式不正确
+    '''
     EL = GetEditionLogs_Plugin(plugin_name)
     return GetVersion(EL)
 
 def JudgeVersion_Greater_Plugin(plugin_name: str, Version: str) -> bool:
+    '''
+    判断版本是否大于指定版本
+
+    :param: plugin_name 插件名
+    :param: Version 指定的版本
+
+    :return: bool 版本是否大于指定版本
+    '''
     return VersionSystem.JudgeVersion_Greater(GetVersionForEditionLogs_Plugin(plugin_name), Version)
 
 def JudgeVersion_Less_Plugin(plugin_name: str, Version: str) -> bool:
+    '''
+    判断版本是否小于指定版本
+
+    :param: plugin_name 插件名
+    :param: Version 指定的版本
+
+    :return: bool 版本是否小于指定版本
+    '''
     return VersionSystem.JudgeVersion_Less(GetVersionForEditionLogs_Plugin(plugin_name), Version)
 
 def JudgeVersion_Equal_Plugin(plugin_name: str, Version: str) -> bool:
+    '''
+    判断版本是否等于指定版本
+
+    :param: plugin_name 插件名
+    :param: Version 指定的版本
+
+    :return: bool 版本是否等于指定版本
+    '''
     return VersionSystem.JudgeVersion_Equal(GetVersionForEditionLogs_Plugin(plugin_name), Version)
 
 def ImportPlugin(plugin_name: str, Now_plugin_name) -> dict[str, Any] | NoReturn:
+    '''
+    导入插件
+
+    :param: plugin_name 本插件的名称
+    :param: Now_plugin_name 要导入的插件的名称
+
+    :return: dict[str, Any] 插件内容
+    :return: NoReturn 插件不存在或格式不正确
+    '''
     def Load(path: str):
         path = str(pathlib.Path(path).resolve())
         filePath = os.path.join(path, './__init__.py')

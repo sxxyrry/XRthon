@@ -30,6 +30,13 @@ from PluginAPI import (
     GetVersionForEditionLogs_Plugin,
     GetVersion,
     JudgeVersion_Less_Plugin,
+    framesInfo,
+    MainNotebook,
+    EditorNB,
+    EditorNBFrame,
+    InfoNB,
+    InfoNBFrame,
+    AddInfoPage
 )
 from Plugin import (
     LoadPlugins,
@@ -76,7 +83,7 @@ else:
 class Editor():
     def __init__(self):
         self.frames: list[tuple[tk.Frame, Liner]] = frames
-        self.framesInfo: list[tk.Frame] = []
+        self.framesInfo: list[tk.Frame] = framesInfo
         self.frame_id = -1
         self.i = 0
         self.Now_frame_id = 0
@@ -228,16 +235,13 @@ class Editor():
         
         self.root.config(menu=self.Up)
 
-        self.MainNotebook = CustomNotebook(self.parent)
-        self.MainNotebook.pack(fill=tk.BOTH, expand=True)
+        self.MainNotebook = MainNotebook
 
-        self.EditorNBFrame = tk.Frame(self.parent)
-        self.EditorNB = CustomNotebook(self.EditorNBFrame)
-        self.EditorNB.pack(fill=tk.BOTH, expand=True)
+        self.EditorNB = EditorNB
+        self.EditorNBFrame = EditorNBFrame
 
-        self.InfoNBFrame = tk.Frame(self.parent)
-        self.InfoNB = CustomNotebook(self.InfoNBFrame)
-        self.InfoNB.pack(fill=tk.BOTH, expand=True)
+        self.InfoNB = InfoNB
+        self.InfoNBFrame = InfoNBFrame
 
         self.Bottom.pack(side=tk.BOTTOM, fill=tk.X)
         
@@ -526,20 +530,6 @@ class Editor():
             self.Now_frame_id = self.frames.index((frame, line))
         except ValueError:
             self.Now_frame_id = self.frame_id
-    
-    def add_info_page(self, title="Information", text="Information"):
-        frame = tk.Frame(self.root)
-
-        info_label = tk.Label(frame, text=text, wraplength=400, justify=tk.LEFT)
-        info_label.pack(fill="both", expand=True)
-
-        self.framesInfo.append(frame)
-
-        self.InfoNB.add(frame, text=title)
-        self.MainNotebook.select(1)
-        self.InfoNB.select(len(self.framesInfo) - 1)
-        if len(self.framesInfo) - 1 == 0:
-            self.InfoNB.protect_tab(0)
 
     def add_editor_page(self):
         frame = tk.Frame(self.root)
@@ -612,7 +602,7 @@ def start():
 
     editor.add_editor_page()
 
-    editor.add_info_page(texts[0], texts[1])
+    AddInfoPage(texts[0], texts[1])
 
     if len(sys.argv) == 2:
         editor.frames[editor.frame_id][1].load_content(open(sys.argv[1], 'r', encoding='UTF-8').read())
