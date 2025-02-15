@@ -54,4 +54,5 @@ B--0--0.1--_indev--2025*2*3 Version:
         HowToUse.md
         HowToUse.txt
 B--0--0.1--_indev--2025*2*4 Version:
-    Add copyright information
+    Added copyright information
+    Added if statement
