@@ -578,15 +578,15 @@ class Keys():
             i = number
 
             while 1:
-                i += 1
                 lt = alltexts[i]
 
                 if lt.startswith('END'):
                     if lt == f'END {linetext}':
                         break
 
-
                 body.append(lt[4:])
+
+                i += 1
 
             
             try:
@@ -1055,8 +1055,8 @@ class Variable():
 
                 # 获取环境中的对象
                 if name not in clsobj.environment.values.keys(): # type: ignore
-                    value, type_ = _a(value) # type: ignore
-                    return value, type_, False
+                    value, type_, IsPrivateVariable = _a(value) # type: ignore
+                    return (value, type_, IsPrivateVariable)
                 obj = clsobj.environment.values[name]['value']
                 
                 # 逐层获取属性或方法
