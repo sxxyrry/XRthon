@@ -5,7 +5,7 @@ import shutil, os
 
 # isRun = True
 
-def del_file(path):
+def del_file(path: str):
     shutil.rmtree(path)
 
 def del___pycache__():

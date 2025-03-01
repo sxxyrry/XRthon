@@ -1,16 +1,16 @@
 from ...PluginAPI import (
-    root,
-    frames,
-    parent,
+    root, # type: ignore
+    frames, # type: ignore
+    parent, # type: ignore
     Up,
-    Bottom,
+    Bottom, # type: ignore
     tk,
     JudgeVersion_Equal_Plugin,
-    JudgeVersion_Greater_Plugin,
-    JudgeVersion_Less_Plugin,
+    JudgeVersion_Greater_Plugin, # type: ignore
+    JudgeVersion_Less_Plugin, # type: ignore
     FindPlugin,
     ImportPlugin,
-    GetVersionForEditionLogs_Plugin
+    GetVersionForEditionLogs_Plugin # type: ignore
 )
 
 

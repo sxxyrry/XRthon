@@ -56,7 +56,7 @@ def DecodeAndInstallPackage(PackagePath: str):
     with py7zr.SevenZipFile(os.path.join(temppatha, './Code.7z'), 'r') as f:
         f.extractall(temppathc)
 
-    name = config['name']
+    name = config['name'] # type: ignore
 
     _ = 0
 

@@ -1,9 +1,9 @@
 import base64
-import ghapi.all as ghapi
+import ghapi.all as ghapi # type: ignore
 # from .FileExists import FileExists
 
 
-def ChangeFile(access_token, owner, repo, file_path, commit_message, content):
+def ChangeFile(access_token: str, owner: str, repo: str, file_path: str, commit_message: str, content: str) -> None:
     """
     在 GitHub 仓库中修改文件。
     
@@ -18,7 +18,7 @@ def ChangeFile(access_token, owner, repo, file_path, commit_message, content):
 
     try:
         current_file = api.repos.get_content(path=file_path) # type: ignore
-        sha = current_file.sha
+        sha = current_file.sha # type: ignore
     except Exception as e:
         if hasattr(e, 'status') and e.status == 404: # type: ignore
             sha = None

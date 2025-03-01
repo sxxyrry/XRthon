@@ -1,1 +1,7 @@
-{"EditionLogsFilePath": "./Edition_logs.txt", "state": "Disabled"}
+{
+    "EditionLogsFilePath": "./Edition_logs.txt",
+    "state": "Disabled",
+    "IconFilePath": "./icon.png",
+    "OverviewText": "This is a plugin used for testing plugins",
+    "MarkdownFilePathForDescribingInformation": "./Info.md"
+}

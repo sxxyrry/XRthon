@@ -64,7 +64,7 @@ def CreatePackageTextFile(_7zFilePath: str, outputPath: str):
 
                 key = '-'.join(list(config.values())) # type: ignore
 
-                text_ = encrypt(Base64FileContent, key)
+                text_ = encrypt(Base64FileContent, key) # type: ignore
 
                 shutil.rmtree(temppath)
 

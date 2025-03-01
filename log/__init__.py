@@ -101,7 +101,7 @@ class log():
             self.format: str = self.format if self.format else 'XR - {time} - {level} - {name} : {message}'
         
         if isusefile is not None:
-            if not isinstance(isusefile, bool):
+            if not isinstance(isusefile, bool): # type: ignore
                 self.__ie('isusefileisnotbool')
             else:
                 self.isusefile = isusefile
@@ -109,7 +109,7 @@ class log():
             self.isusefile = self.isusefile if self.isusefile else False
 
         if isuseconsole is not None:
-            if not isinstance(isuseconsole, bool):
+            if not isinstance(isuseconsole, bool): # type: ignore
                 self.__ie('isuseconsoleisnotbool')
             else:
                 self.isuseconsole = isuseconsole
@@ -170,7 +170,7 @@ class log():
 
         return self
 
-    def get_log(self, name):
+    def get_log(self, name: str):
         # print(self.name)
         # if self.name == 'root':
         #     _log = log(name)
@@ -236,11 +236,11 @@ class log():
         else:
             pass
 
-    def get_exception(self, exc_info=None):
+    def get_exception(self, exc_info=None): # type: ignore
         if exc_info is None:
             exc_info = traceback.format_exc()
         else:
-            exc_info = traceback.format_exception_only(*exc_info[:2])
+            exc_info = traceback.format_exception_only(*exc_info[:2]) # type: ignore
             exc_info = ''.join(exc_info)
 
         self.error(f"Exception occurred: \n{exc_info}")
@@ -284,7 +284,7 @@ class log():
     def __enter__(self):
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type, exc_val, exc_tb): # type: ignore
         self.exit()
         return
 
@@ -317,8 +317,8 @@ def error(message: str):
 def critical(message: str):
     return root_log.critical(message)
 
-def get_exception(exc_info=None):
-    return root_log.get_exception(exc_info)
+def get_exception(exc_info=None): # type: ignore
+    return root_log.get_exception(exc_info) # type: ignore
 
 def get_log(name: str):
     return root_log.get_log(name)

@@ -1,6 +1,7 @@
-import ghapi.all as ghapi
+import ghapi.all as ghapi # type: ignore
 
-def GetFileAndDirsNameList(access_token, owner, repo, dirpath):
+
+def ListDir(access_token: str, owner: str, repo: str, dirpath: str) -> list[str]:
     """
     从 GitHub 仓库获取指定文件夹中的文件及文件夹的名称列表。
     
@@ -14,4 +15,4 @@ def GetFileAndDirsNameList(access_token, owner, repo, dirpath):
     # 获取文件内容
     response = api.repos.get_content(path=dirpath) # type: ignore
     
-    return [item['name'] for item in response]
+    return [item['name'] for item in response] # type: ignore

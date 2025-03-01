@@ -6,16 +6,16 @@ linenum = 0
 
 
 class Liner(indrxer.IndexText):
-    def __init__(self, parent, *args, **kwargs):
-        super().__init__(parent, *args, **kwargs)
-        self.breakpoints = set()  # 初始化空集合用于存放断点行号
+    def __init__(self, parent: tk.Frame | tk.Toplevel, *args, **kwargs): # type: ignore
+        super().__init__(parent, *args, **kwargs) # type: ignore
+        self.breakpoints: set[int] = set()  # 初始化空集合用于存放断点行号
         self.y_scrollbar = tk.Scrollbar(parent)
         self.x_scrollbar = tk.Scrollbar(parent, orient='horizontal')
         self.x_scrollbar.pack(side=tk.BOTTOM, fill=tk.X)
         self.y_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         self.config(undo=True, xscrollcommand=self.x_scrollbar.set, yscrollcommand=self.y_scrollbar.set, wrap='none')
-        self.x_scrollbar.config(command=self.xview)
-        self.y_scrollbar.config(command=self.yview)
+        self.x_scrollbar.config(command=self.xview) # type: ignore
+        self.y_scrollbar.config(command=self.yview) # type: ignore
         self.font = self.settings.family
         self.font_size = self.settings.size
         self.numl = tk.Canvas(parent,
@@ -31,9 +31,9 @@ class Liner(indrxer.IndexText):
         self.bind("<Button-1>", lambda event: self._see())
         self.bind("<B2-Motion>", lambda event: self._see())
         self.bind("<MouseWheel>", lambda event: self._see())
-        self.bind("<Control-b>", self.toggle_breakpoint)  # 添加断点快捷键
+        self.bind("<Control-b>", self.toggle_breakpoint)  # type: ignore # 添加断点快捷键
 
-    def toggle_breakpoint(self, event=None):
+    def toggle_breakpoint(self, event=None): # type: ignore
         line_number = self.get_lineno_at_cursor()
         if line_number in self.breakpoints:
             self.remove_breakpoint(line_number)
@@ -62,7 +62,7 @@ class Liner(indrxer.IndexText):
                     break
                 y = dline[1]
                 linenum = str(i).split(".")[0]
-                if linenum in self.breakpoints:
+                if linenum in self.breakpoints: # type: ignore
                     self.numl.create_text(2, y, anchor="nw", text=linenum, fill='red',
                                           font=(self.font, self.font_size, 'bold' if self.is_bold else 'normal',
                                                 'italic' if self.is_italic else 'roman') # type: ignore
@@ -81,7 +81,7 @@ class Liner(indrxer.IndexText):
         except RuntimeError:
             pass
 
-    def load_content(self, content):
+    def load_content(self, content: str):
         self.delete("1.0", "end")  # 删除已有内容
         self.insert("1.0", content)  # 插入新内容
 
@@ -90,10 +90,10 @@ class Liner(indrxer.IndexText):
         _.pop()
         return '\n'.join(_)
 
-    def set_breakpoint(self, line_number):
+    def set_breakpoint(self, line_number: int):
         self.breakpoints.add(line_number)
 
-    def remove_breakpoint(self, line_number):
+    def remove_breakpoint(self, line_number: int):
         if line_number in self.breakpoints:
             self.breakpoints.remove(line_number)
     
@@ -104,8 +104,8 @@ class Liner(indrxer.IndexText):
 
 if __name__ == "__main__":
     root = tk.Tk()
-    root.attributes("-topmost", 1)
-    text = Liner(root)
+    root.attributes("-topmost", 1) # type: ignore
+    text = Liner(root) # type: ignore
     text.pack(fill="both", expand=1)
     while True:  # use this instead of mainloop
         text.redraw()

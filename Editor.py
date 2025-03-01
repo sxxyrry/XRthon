@@ -2,14 +2,15 @@ import os
 import sys
 import tkinter as tk
 import webbrowser
+import time
 from typing import Literal
-import tkintertools as tkt
+from PIL import Image, ImageTk
+import tkintertools as tkt # type: ignore
 import tkinter.ttk as ttk
 import _tkinter as _tk
 from tkinter import filedialog, messagebox, scrolledtext
 from colorama import Fore, Style, init
 import yaml
-from custom.CustomNotebook import CustomNotebook
 from custom.liner import Liner
 from Runner import Runner
 from Edition_logs import English_Edition_logsForEditor, Chinese_Edition_logsForEditor
@@ -20,14 +21,14 @@ from _del_ import del___pycache__
 from GithubAboutFile import GetFileText
 from BaseGConfig import token
 from PluginAPI import (
-    GetEditionLogs_Plugin,
+    # GetEditionLogs_Plugin,
     root,
     frames,
     parent,
     Up,
     Bottom,
     config,
-    GetVersionForEditionLogs_Plugin,
+    # GetVersionForEditionLogs_Plugin,
     GetVersion,
     JudgeVersion_Less_Plugin,
     framesInfo,
@@ -36,19 +37,24 @@ from PluginAPI import (
     EditorNBFrame,
     InfoNB,
     InfoNBFrame,
-    AddInfoPage
+    AddInfoPage,
+    notice,
 )
 from Plugin import (
     LoadPlugins,
-    GetLoadedPlugins,
+    # GetLoadedPlugins,
     GetInstalledPluginsList,
     GetAllPlugins,
     FindPlugin,
     InstallPlugin,
     UninstallPlugin,
+    # PluginsIconDict,
 )
 from logs import Check_log, Runner_log
+import urllib3
 
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 init()
 
@@ -140,6 +146,13 @@ class Editor():
                 "Help",
                 "Please take a look at the HowToUse file.",
                 "Test Program",
+                "Notice",
+                "Normal connection",
+                "Connect to the database normally",
+                "Unable to connect",
+                "Unable to connect to the database, please check your network connection",
+                "Editor",
+                "Info",
             ]
 
         if self.config.language == 'en':
@@ -189,6 +202,13 @@ class Editor():
                 "帮助",
                 "请去看 HowToUse 文件。",
                 "测试程序",
+                "通知",
+                "正常连接",
+                "正常连接到数据库。",
+                "无法连接",
+                "无法连接到数据库，请检查网络连接。",
+                "编辑器",
+                "信息",
             ]
         else:
             _EN()
@@ -223,14 +243,14 @@ class Editor():
         self.Up.add_cascade(label=self.texts[12], menu=self.Plugin_menu)
         # self.Up.add_command(label="Edition Logs", command=self.EditionLogsInterface)
         self.Up.add_cascade(label=self.texts[13], menu=self.EditionLogs_menu)
-        self.Up.add_command(label=self.texts[40], command=lambda :messagebox.showinfo(self.texts[40], self.texts[41]))
+        self.Up.add_command(label=self.texts[40], command=lambda :messagebox.showinfo(self.texts[40], self.texts[41])) # type: ignore
         if self.config.Mod == 'DEV':
             self.Up.add_command(label="Restart", command=self.Restart)
-            self.Up.add_command(label="Toggle Theme", command=self.toggle_theme)
+            # self.Up.add_command(label="Toggle Theme", command=self.toggle_theme)
         self.Up.add_command(label=self.texts[22], command=self.switch_language)
         self.Up.add_command(label=self.texts[23], command=self.Introduction_Website)
         self.Up.add_command(label=self.texts[14], command=self.VersionInterface)
-        self.Up.add_command(label=self.texts[42], command=self.testPro)
+        # self.Up.add_command(label=self.texts[42], command=self.TestProgramInterface)
         self.Up.add_command(label=self.texts[15], command=lambda: os._exit(0))
         
         self.root.config(menu=self.Up)
@@ -245,35 +265,61 @@ class Editor():
 
         self.Bottom.pack(side=tk.BOTTOM, fill=tk.X)
         
-        self.MainNotebook.add(self.EditorNBFrame, text="Editor")
-        self.MainNotebook.add(self.InfoNBFrame, text="Info")
+        self.Notice = notice
+        self.Notice.title.config(text=self.texts[43])
+
+        self.MainNotebook.add(self.EditorNBFrame, text=self.texts[48])
+        self.MainNotebook.add(self.InfoNBFrame, text=self.texts[49])
         self.MainNotebook.protect_tab(0)
         self.MainNotebook.protect_tab(1)
+
+        self.TestCanConnectTheDatabase()
+
+    def TestCanConnectTheDatabase_(self):
+        # 发送网络请求到 Github 私人仓库，如果请求速度超过2秒，视为网络连接失败
+        import requests
+        def check_repo(url: str):
+            try: response = requests.get(url, timeout=2, verify=False); return response.status_code == 200 #
+            except requests.exceptions.RequestException: return False
+        repos = [
+            'https://api.github.com/repos/sxxyrry/XRthonPluginsDatabase',
+            'https://api.github.com/repos/sxxyrry/XRthon',
+            'https://api.github.com/repos/sxxyrry/XRthonDatabase'
+        ]
+        for repo in repos:
+            if check_repo(repo): del requests; return True
+        del requests; return False
+
+    def TestCanConnectTheDatabase(self):
+        if self.TestCanConnectTheDatabase_():
+            self.Notice.EmitNotice(self.texts[44], self.texts[45])
+        else: 
+            self.Notice.EmitErrorNotice(self.texts[46], self.texts[47])
 
     def Introduction_Website(self):
         webbrowser.open('https://sxxyrry.github.io/XRthon_Project/')
 
     def Restart(self):
-        os.startfile(os.path.join(folder, "./Editor.py"))
+        os.startfile(os.path.join(folder, "./Editor.py"), show_cmd=1)
         os._exit(0)
 
     def switch_language(self):
         if self.config.language == 'en':
             a = 'English'
             b = '中文'
-            if messagebox.askyesno(self.texts[22], f'{a} -> {b}'):
+            if messagebox.askyesno(self.texts[22], f'{a} -> {b}'): # type: ignore
                 self.config.SwitchLanguage('zh-cn')
             else:
                 return
         elif self.config.language == 'zh-cn':
             a = '中文'
             b = 'English'
-            if messagebox.askyesno(self.texts[22], f'{a} -> {b}'):
+            if messagebox.askyesno(self.texts[22], f'{a} -> {b}'): # type: ignore
                 self.config.SwitchLanguage('en')
             else:
                 return
 
-        messagebox.showinfo(self.texts[16], self.texts[17])
+        messagebox.showinfo(self.texts[16], self.texts[17]) # type: ignore
 
     def bind_shortcuts(self):
         self.root.bind("<Control-s>", lambda event: self.save_file())
@@ -283,7 +329,7 @@ class Editor():
         self.root.bind("<Control-S>", lambda event: self.save_all_files())
 
     def save_all_files(self):
-        for i, (frame, line) in enumerate(self.frames):
+        for _, (_, line) in enumerate(self.frames):
             file_path = filedialog.asksaveasfilename(title=self.texts[20],defaultextension='.XRthon', filetypes=[("XRthon Files", "*.XRthon")], initialdir=os.getcwd())
             if file_path:
                 with open(file_path, 'w') as file:
@@ -292,23 +338,28 @@ class Editor():
     def toggle_theme(self):
         if self.theme == "light":
             self.theme = "dark"
-            self.style.configure("CustomNotebook", background="black", fieldbackground="black", foreground="black")
-            self.style.map("CustomNotebook.Tab", background=[("selected", "black")], foreground=[("selected", "black")])
-            for frame, line in self.frames:
+            self.style.configure("CustomNotebook", background="black", fieldbackground="black", foreground="black") # type: ignore
+            self.style.map("CustomNotebook.Tab", background=[("selected", "black")], foreground=[("selected", "black")]) # type: ignore
+            for _, line in self.frames:
                 line.config(bg="black", fg="white")
         else:
             self.theme = "light"
-            self.style.configure("CustomNotebook", background="white", fieldbackground="white", foreground="black")
-            self.style.map("CustomNotebook.Tab", background=[("selected", "white")], foreground=[("selected", "white")])
-            for frame, line in self.frames:
+            self.style.configure("CustomNotebook", background="white", fieldbackground="white", foreground="black") # type: ignore
+            self.style.map("CustomNotebook.Tab", background=[("selected", "white")], foreground=[("selected", "white")]) # type: ignore
+            for _, line in self.frames:
                 line.config(bg="white", fg="black")
 
     def InstalledPluginsInterface(self):
         _ = tkt.Tk(title=self.texts[7])
 
-        PluginsList: list[tuple[str, Literal['Enabled', 'Disabled']]] = GetInstalledPluginsList()
+        PluginsList: list[tuple[str, Literal['Enabled', 'Disabled'], Image.Image, str, str]] = GetInstalledPluginsList()
 
         for i in range(len(PluginsList)):
+            img_ = PluginsList[i][2]
+
+            img = ImageTk.PhotoImage(img_, master=_)
+
+            # print(img, img.height(), img.width(), img.tk, img._PhotoImage__photo, img._PhotoImage__mode, img._PhotoImage__size)
             f = tk.Frame(_)
 
             # btn = tk.Button()
@@ -319,11 +370,18 @@ class Editor():
 
             PluName = PluginsList[i][0]
 
-            t = tk.Label(f, text=f"{i + 1} {self.texts[25]}: {PluName} ({state})")
-            t.grid(row=0, column=0)
+            iLbl = tk.Label(f, text=f"{i + 1}")
+            iLbl.grid(row=0, column=0)
+
+            imgLbl = tk.Label(f, image=img)
+            imgLbl.image = img # type: ignore
+            imgLbl.grid(row=0, column=1)
+
+            t = tk.Label(f, text=f"{self.texts[25]}: {PluName} ({state})")
+            t.grid(row=0, column=2)
 
             UninstallBtn = tk.Button(f, text=self.texts[34], command=lambda PluName=PluName: self.UninstallPlugin(PluName))
-            UninstallBtn.grid(row=0, column=1)
+            UninstallBtn.grid(row=0, column=3)
 
             UpdateBtn = tk.Button(f, text=self.texts[37], command=lambda PluName=PluName: self.UpdatePlugin(PluName))
             UpdateBtn.config(state='disabled')
@@ -348,6 +406,9 @@ class Editor():
             ):
                 UpdateBtn.config(state='normal')
 
+            OverviewTextLbl = tk.Label(f, text=f"{PluginsList[i][3]}")
+            OverviewTextLbl.grid(row=1, column=2)
+
             # print(f'{GetVersion(
             #         GetFileText(
             #             token,
@@ -364,20 +425,20 @@ class Editor():
             #         )
             #     )=}')
 
-            UpdateBtn.grid(row=0, column=2)
+            UpdateBtn.grid(row=0, column=4)
 
             f.pack()
         
         _.mainloop()
 
     def UninstallPlugin(self, PluName: str):
-        if messagebox.askyesno(self.texts[34], self.texts[35].format(PluName)):
+        if messagebox.askyesno(self.texts[34], self.texts[35].format(PluName)): # type: ignore
 
             UninstallPlugin(PluName)
 
-            messagebox.showinfo(self.texts[34], self.texts[36])
+            messagebox.showinfo(self.texts[34], self.texts[36]) # type: ignore
 
-            messagebox.showinfo(self.texts[16], self.texts[17])
+            messagebox.showinfo(self.texts[16], self.texts[17]) # type: ignore
         else:
             return
 
@@ -411,25 +472,25 @@ class Editor():
         _.mainloop()
 
     def InstallPlugin(self, PluName: str):
-        if messagebox.askyesno(self.texts[29], self.texts[30].format(PluName)):
+        if messagebox.askyesno(self.texts[29], self.texts[30].format(PluName)): # type: ignore # type: ignore
             
             InstallPlugin(PluName)
 
-            messagebox.showinfo(self.texts[29], self.texts[31])
+            messagebox.showinfo(self.texts[29], self.texts[31]) # type: ignore
 
-            messagebox.showinfo(self.texts[16], self.texts[17])
+            messagebox.showinfo(self.texts[16], self.texts[17]) # type: ignore
         else:
             return
 
     def UpdatePlugin(self, PluName: str):
-        if messagebox.askyesno(self.texts[37], self.texts[38].format(PluName)):
+        if messagebox.askyesno(self.texts[37], self.texts[38].format(PluName)): # type: ignore
             
             UninstallPlugin(PluName)
             InstallPlugin(PluName)
 
-            messagebox.showinfo(self.texts[37], self.texts[39])
+            messagebox.showinfo(self.texts[37], self.texts[39]) # type: ignore
 
-            messagebox.showinfo(self.texts[16], self.texts[17])
+            messagebox.showinfo(self.texts[16], self.texts[17]) # type: ignore
         else:
             return
 
@@ -440,7 +501,7 @@ class Editor():
         lable.pack()
 
         _.mainloop()
-
+    
     def AboutInterface(self):
         _ = tkt.Tk(title=self.texts[5])
 
@@ -509,23 +570,23 @@ class Editor():
         
         Runner_log.info(f'\n---------------------\nEnd Run temp_{self.Now_frame_id + 1}\n')
 
-        del runner
+        runner.End()
 
-    def OnCloseEditorPage(self, e: tk.Event):
+    def OnCloseEditorPage(self, e: tk.Event): # type: ignore
         widget: tk.Frame = e.widget # type: ignore
 
         frames_ = [i[0] for i in self.frames]
 
-        self.frames.remove(self.frames[frames_.index(widget)])
+        self.frames.remove(self.frames[frames_.index(widget)]) # type: ignore
         self.i -= 1
         self.frame_id -= 1
 
-    def OnCloseInfoPage(self, e: tk.Event):
+    def OnCloseInfoPage(self, e: tk.Event): # type: ignore
         widget: tk.Frame = e.widget # type: ignore
 
-        self.framesInfo.remove(self.framesInfo[self.framesInfo.index(widget)])
+        self.framesInfo.remove(self.framesInfo[self.framesInfo.index(widget)]) # type: ignore
 
-    def add_updater(self, frame, line):
+    def add_updater(self, frame: tk.Frame, line: Liner):
         try:
             self.Now_frame_id = self.frames.index((frame, line))
         except ValueError:
@@ -537,35 +598,26 @@ class Editor():
         line.pack(fill="both", expand=True)
         self.frames.append((frame, line))
         frame.bind('<Visibility>', lambda event: self.add_updater(frame, line))
-        frame.bind('<<NotebookTabClosed>>', self.OnCloseEditorPage)
+        frame.bind('<<NotebookTabClosed>>', self.OnCloseEditorPage) # type: ignore
         if self.i == 0:
             self.EditorNB.add(frame, text=f"XRthon{self.texts[24]}")
             self.EditorNB.protect_tab(len(self.frames) - 1)
         else:
             self.EditorNB.add(frame, text=f"XRthon{self.texts[24]} {self.i + 1}")
         
-        self.MainNotebook.select(0)
-        self.EditorNB.select(len(self.frames) - 1)
+        self.MainNotebook.select(0) # type: ignore
+        self.EditorNB.select(len(self.frames) - 1) # type: ignore
         
         self.frame_id = len(self.frames) - 1
         self.i += 1
     
-    def testPro(self):
-        self.add_editor_page()
-
-        _ = self.frames[-1][1]
-        _.load_content('''\
-import(XRgame)
-XRgame.PlayMusic('./TestFiles/恭喜发财.mp3')
-''')
-
     def update(self):
         try:
             if self.root.wm_state() == "iconic":
                 pass
             if self.frame_id == -1:
                 return
-            if isinstance(self.frames[self.frame_id][1], Liner) and not isinstance(self.frames[self.frame_id][1], tk.Label): 
+            if isinstance(self.frames[self.frame_id][1], Liner) and not isinstance(self.frames[self.frame_id][1], tk.Label):  # type: ignore
                 self.frames[self.frame_id][1].redraw()
         except _tk.TclError:
             del___pycache__()
@@ -596,6 +648,27 @@ def start():
         ]
     else:
         texts = _EN()
+
+    IconPNG = ImageTk.PhotoImage(Image.open(os.path.join(os.path.dirname(__file__), './Images/Icon_XRthon.png')).resize((370, 70))) # type: ignore
+
+    SignPNG = ImageTk.PhotoImage(Image.open(os.path.join(os.path.dirname(__file__), './Images/Sign.png')).resize((330, 180))) # type: ignore
+
+    IconLbl = tk.Label(root, image=IconPNG)
+    IconLbl.image = IconPNG # type: ignore
+    IconLbl.pack()
+
+    SignLbl = tk.Label(root, image=SignPNG)
+    SignLbl.image = SignPNG # type: ignore
+    SignLbl.pack()
+
+    root.update()
+
+    time.sleep(1)
+
+    IconLbl.destroy()
+    SignLbl.destroy()
+
+    notice.pack()
 
     editor = Editor()
     editor.pack()

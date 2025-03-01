@@ -56,3 +56,5 @@ B--0--0.1--_indev--2025*2*3 Version:
 B--0--0.1--_indev--2025*2*4 Version:
     Added copyright information
     Added if statement
+B--0--0.1--_indev--2025*2*5 Version:
+    Strict type inspection mode adapted to Pylance

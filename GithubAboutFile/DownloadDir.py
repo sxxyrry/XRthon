@@ -1,10 +1,10 @@
 from .DirExists import DirExists
 from .DownloadFile import DownloadFile
-import ghapi.all as ghapi
+import ghapi.all as ghapi # type: ignore
 import os
 
 
-def DownloadDir(access_token, owner, repo, dir_path, local_path):
+def DownloadDir(access_token: str, owner: str, repo: str, dir_path: str, local_path: str) -> None:
     """
     从 GitHub 仓库下载文件夹。
     
@@ -23,14 +23,14 @@ def DownloadDir(access_token, owner, repo, dir_path, local_path):
 
             os.makedirs(local_path, exist_ok=True)
 
-            for item in response:
+            for item in response: # type: ignore
                 if item['type'] == 'file':
-                    file_path = os.path.join(local_path, item['name'])
-                    DownloadFile(access_token, owner, repo, item['path'], file_path)
+                    file_path = os.path.join(local_path, item['name']) # type: ignore
+                    DownloadFile(access_token, owner, repo, item['path'], file_path) # type: ignore
                 elif item['type'] == 'dir':
-                    sub_dir_path = os.path.join(local_path, item['name'])
+                    sub_dir_path = os.path.join(local_path, item['name']) # type: ignore
                     os.makedirs(sub_dir_path, exist_ok=True)
-                    DownloadDir(access_token, owner, repo, item['path'], sub_dir_path)
+                    DownloadDir(access_token, owner, repo, item['path'], sub_dir_path) # type: ignore
         except Exception as e:
             raise Exception(f"Error downloading directory {dir_path}: {e}")
     else:

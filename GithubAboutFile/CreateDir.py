@@ -1,7 +1,7 @@
 from .CreateFile import CreateFile
 
 
-def CreateDir(access_token, owner, repo, dir_path, commit_message):
+def CreateDir(access_token: str, owner: str, repo: str, dir_path: str, commit_message: str) -> None:
     """
     在 GitHub 仓库中创建目录。
     

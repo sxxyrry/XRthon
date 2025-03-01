@@ -1,7 +1,7 @@
-import ghapi.all as ghapi
+import ghapi.all as ghapi # type: ignore
 
 
-def DirExists(access_token, owner, repo, file_path):
+def DirExists(access_token: str, owner: str, repo: str, file_path: str) -> bool:
     """
     查询 GitHub 仓库中是否存在指定文件夹。
     
@@ -19,7 +19,7 @@ def DirExists(access_token, owner, repo, file_path):
         response = api.repos.get_content(path=file_path)  # type: ignore
         
         # 如果返回结果是目录，则返回 True
-        return not type(response) == list
+        return not type(response) == list # type: ignore
     except Exception as e:
         if hasattr(e, 'status') and e.status == 404:  # type: ignore
             return False

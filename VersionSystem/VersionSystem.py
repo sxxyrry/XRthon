@@ -68,7 +68,7 @@ _indev标记：表达是否是正在开发版，可以不加
             return False
         
         # 提取匹配的各部分
-        tag, major_version, version_number, indev, year, month, revision = match.groups()
+        tag, major_version, version_number, indev, year, month, revision = match.groups() # type: ignore
         
         # 验证标记
         if tag not in ['O', 'B']:
@@ -116,7 +116,7 @@ _indev标记：表达是否是正在开发版，可以不加
         return True
 
     @staticmethod
-    def CompareVersions(version1: list, version2: list) -> int:
+    def CompareVersions(version1: list, version2: list) -> int: # type: ignore
         # 比较标记
         if version1[0] != version2[0]:
             del___pycache__()
@@ -170,7 +170,7 @@ _indev标记：表达是否是正在开发版，可以不加
             return False
         
         del___pycache__()
-        return VersionSystem.CompareVersions(NV1, NV2) > 0
+        return VersionSystem.CompareVersions(NV1, NV2) > 0 # type: ignore
         
     @staticmethod
     def JudgeVersion_Less(Version1: str, Version2: str) -> bool | NoReturn:
@@ -182,7 +182,7 @@ _indev标记：表达是否是正在开发版，可以不加
             return False
         
         del___pycache__()
-        return VersionSystem.CompareVersions(NV1, NV2) < 0
+        return VersionSystem.CompareVersions(NV1, NV2) < 0 # type: ignore
     
     @staticmethod
     def JudgeVersion_Equal(Version1: str, Version2: str) -> bool | NoReturn:
@@ -194,7 +194,7 @@ _indev标记：表达是否是正在开发版，可以不加
             return False
         
         del___pycache__()
-        return VersionSystem.CompareVersions(NV1, NV2) == 0
+        return VersionSystem.CompareVersions(NV1, NV2) == 0 # type: ignore
 
     @staticmethod
     def GetNumberVersion(version: str) -> str | NoReturn:

@@ -1,9 +1,9 @@
 import base64
-import ghapi.all as ghapi
-from .GetFileText import GetFileText
+import ghapi.all as ghapi # type: ignore
+# from .GetFileText import GetFileText
 
 
-def UploadFile(access_token, owner, repo, file_path, commit_message, path):
+def UploadFile(access_token: str, owner: str, repo: str, file_path: str, commit_message: str, path: str):
     """
     上传文件到 GitHub 仓库。
     

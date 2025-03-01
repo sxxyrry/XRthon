@@ -1,8 +1,8 @@
 import base64
-import ghapi.all as ghapi
+import ghapi.all as ghapi # type: ignore
 
 
-def GetFileText(access_token, owner, repo, file_path) -> str:
+def GetFileText(access_token: str, owner: str, repo: str, file_path: str) -> str:
     """
     从 GitHub 仓库获取文件内容。
     
@@ -17,7 +17,7 @@ def GetFileText(access_token, owner, repo, file_path) -> str:
     # 获取文件内容
     response = api.repos.get_content(path=file_path) # type: ignore
     
-    return base64.b64decode(response.content).decode('utf-8')
+    return base64.b64decode(response.content).decode('utf-8') # type: ignore
 
     # # 解码文件内容
     # decoded_content = base64.b64decode(response.content)

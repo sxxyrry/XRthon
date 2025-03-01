@@ -1,9 +1,9 @@
 import base64
-import ghapi.all as ghapi
+import ghapi.all as ghapi # type: ignore
 # from .FileExists import FileExists
 
 
-def AddLineToFile(access_token, owner, repo, file_path, commit_message, content):
+def AddLineToFile(access_token: str, owner: str, repo: str, file_path: str, commit_message: str, content: str) -> None:
     """
     在 GitHub 仓库中修改文件，以加入一行新内容。
     
@@ -18,7 +18,7 @@ def AddLineToFile(access_token, owner, repo, file_path, commit_message, content)
 
     try:
         current_file = api.repos.get_content(path=file_path) # type: ignore
-        sha = current_file.sha
+        sha = current_file.sha # type: ignore
     except Exception as e:
         if hasattr(e, 'status') and e.status == 404: # type: ignore
             sha = None
@@ -28,7 +28,7 @@ def AddLineToFile(access_token, owner, repo, file_path, commit_message, content)
     # if FileExists(access_token, owner, repo, file_path):
 
     # 获取当前文件的内容作为字符串
-    old_content = base64.b64encode(current_file.content.encode()).decode('utf-8') if sha else ''
+    old_content = base64.b64encode(current_file.content.encode()).decode('utf-8') if sha else '' # type: ignore
 
     # 将新的内容编码为Base64
     new_content_encoded = base64.b64encode(content.encode()).decode('utf-8')

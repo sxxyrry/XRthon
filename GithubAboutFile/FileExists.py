@@ -1,7 +1,7 @@
-import ghapi.all as ghapi
+import ghapi.all as ghapi # type: ignore
 
 
-def FileExists(access_token, owner, repo, file_path):
+def FileExists(access_token: str, owner: str, repo: str, file_path: str):
     """
     查询 GitHub 仓库中是否存在指定文件。
     

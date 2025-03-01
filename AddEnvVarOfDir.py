@@ -13,7 +13,7 @@ allfilename = [
     'AddEnvVarOfDir.pdb',
     'AddEnvVarOfDir.runtimeconfig.json',
 ]
-py7zr.unpack_7zarchive(szfp, jyp)
+py7zr.unpack_7zarchive(szfp, jyp) # type: ignore
 
 os.startfile(os.path.join(folder, './AddEnvVarOfDir.exe'))
 

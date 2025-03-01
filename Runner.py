@@ -1,7 +1,7 @@
 import os
 from folder import folder
 from types import NoneType
-from typing import Any, Literal, TypedDict
+from typing import Any, TypedDict
 from versions import GetVersionForXRthon
 from Edition_logs import Chinese_Edition_logsForXRthon, English_Edition_logsForXRthon
 from _del_ import del___pycache__
@@ -10,7 +10,7 @@ from config import Config
 
 config = Config()
 
-KernelName = 'XRXTR'
+KernelName = 'XRXRthonRunner'
 
 version = GetVersionForXRthon()
 
@@ -177,7 +177,7 @@ class Environment():
     '''
     环境实现
     '''
-    def __init__(self, name: str, values: dict[str, dict[str, dict]]):
+    def __init__(self, name: str, values: dict[str, dict[str, dict]]): # type: ignore
         '''
         :param: name 环境名称
         :param: values 环境值（字典）
@@ -188,18 +188,18 @@ class Environment():
         # self.punctuation = punctuation
         # self.BuiltinsFunctoins = BuiltinsFunctoins
         self.name = name
-        self.values = values
+        self.values = values # type: ignore
         self.iE = []
         # self.
         pass
 
-    def set_values(self, values: dict):
+    def set_values(self, values: dict): # type: ignore
         '''
         :param: values 要增加的环境值（字典）
 
         :return: None
         '''
-        self.values.update(values)
+        self.values.update(values) # type: ignore
 
     def AddImportsEnvironment(self, name: str):
         '''
@@ -207,19 +207,19 @@ class Environment():
 
         :return: None
         '''
-        self.iE.append(name)
+        self.iE.append(name) # type: ignore
 
     def getImportsEnvironment(self) -> list[str]:
         '''
         :return: list[str] 返回导入的环境名称列表
         '''
-        return self.iE
+        return self.iE # type: ignore
     
-    def __getitem__(self, item):
-        return self.values[item]
+    def __getitem__(self, item): # type: ignore
+        return self.values[item] # type: ignore
 
     def __str__(self):
-        return f'Environment: {self.name}, Values: {self.values}'
+        return f'Environment: {self.name}, Values: {self.values}' # type: ignore
 
 Environments: dict[str, Environment] = {}
 
@@ -229,11 +229,11 @@ class Object(object):
     def __init__(self, value: object):
         self.value = value
     
-    def __add__(self, other):
-        return Object(self.value + other.value)
+    def __add__(self, other): # type: ignore
+        return Object(self.value + other.value) # type: ignore
 
-    def __mul__(self, other):
-        return Object(self.value * other.value)
+    def __mul__(self, other): # type: ignore
+        return Object(self.value * other.value) # type: ignore
     
     def __repr__(self) -> str:
         return f'<{self.__class__.__name__} [{self.value}]>'
@@ -242,17 +242,17 @@ class Str(Object):
     def __init__(self, value: object):
         self.value = str(value)
     
-    def __add__(self, other):
-        return Str(self.value + other.value)
+    def __add__(self, other): # type: ignore
+        return Str(self.value + other.value) # type: ignore
 
-    def __mul__(self, other):
-        return Str(self.value * other.value)
+    def __mul__(self, other): # type: ignore
+        return Str(self.value * other.value) # type: ignore
     
     def __repr__(self) -> str:
         return f'<Object.{self.__class__.__name__} [\'{self.value}\']>'
 
 class Int(Object):
-    def __init__(self, value: object, number, linetext, path):
+    def __init__(self, value: object, number: int, linetext: str, path: str | None):
         try:
             self.value = int(value) # type: ignore
         except Exception as e:
@@ -261,7 +261,7 @@ class Int(Object):
                    f'Cannot convert {value} to int',
                    number,
                    linetext,
-                   path if not path is None else '<String>',
+                   path if not path is None else '<String>', # type: ignore
                    e
                   )
         
@@ -269,17 +269,17 @@ class Int(Object):
         self.linetext = linetext
         self.path = path
     
-    def __add__(self, other):
-        return Int(self.value + other.value, self.number, self.linetext, self.path)
+    def __add__(self, other): # type: ignore
+        return Int(self.value + other.value, self.number, self.linetext, self.path) # type: ignore
 
-    def __mul__(self, other):
-        return Int(self.value * other.value, self.number, self.linetext, self.path)
+    def __mul__(self, other): # type: ignore
+        return Int(self.value * other.value, self.number, self.linetext, self.path) # type: ignore
     
     def __repr__(self) -> str:
         return f'<Object{self.__class__.__name__} [{self.value}]>'
 
 class Float(Object):
-    def __init__(self, value: object, number, linetext, path):
+    def __init__(self, value: object, number: int, linetext: str, path: str | None):
         try:
             self.value = float(value) # type: ignore
         except Exception as e:
@@ -296,11 +296,11 @@ class Float(Object):
         self.linetext = linetext
         self.path = path
     
-    def __add__(self, other):
-        return Float(self.value + other.value, self.number, self.linetext, self.path)
+    def __add__(self, other): # type: ignore
+        return Float(self.value + other.value, self.number, self.linetext, self.path) # type: ignore
 
-    def __mul__(self, other):
-        return Float(self.value * other.value, self.number, self.linetext, self.path)
+    def __mul__(self, other): # type: ignore
+        return Float(self.value * other.value, self.number, self.linetext, self.path) # type: ignore
     
     def __repr__(self) -> str:
         return f'<Object{self.__class__.__name__} [{self.value}]>'
@@ -365,7 +365,7 @@ class Function():
             exec(f'{self.body[0]}', globals=globals_)
         else:
             runner = Runner(self.name, function=True)
-            self.env.set_values(globals_)
+            self.env.set_values(globals_) # type: ignore
             runner.environment = self.env
             runner.raiser = self.raiser
             texts = '\n'.join(self.body)
@@ -388,7 +388,7 @@ class Runner():
         self.raiser = Raiser
         self.environment = Environment(EnvironmentName, {})
         self.EnvironmentName = EnvironmentName
-        self.environment.set_values(
+        self.environment.set_values( # type: ignore
             {
                 'Kernel' : {
                     'value' : {
@@ -414,7 +414,7 @@ class Runner():
 
         :return: None
         '''
-        with open(os.path.join(filepath), 'r') as f:
+        with open(os.path.join(filepath), 'r', encoding="utf-8") as f:
             texts = f.read()
         
         self.run_fortexts(texts, filepath)
@@ -438,6 +438,10 @@ class Runner():
             
             self.run_forlinetext(line, alltextlist, path, number)
 
+    def End(self):
+        NowImport.clear()
+        del self
+
     def run_forlinetext(self, linetext: str, alltextlist: list[str], path: str | None = None, number: int = 1):
         '''
         运行单行文本
@@ -456,7 +460,7 @@ class Runner():
             if 'END ' in linetext:
                 return
 
-            elif '=' in linetext:
+            elif '=' in linetext and not linetext.startswith('    '):
                 IsPrivateVariable = False
                 list_ = linetext.split('=')
                 name = list_[0]
@@ -468,9 +472,13 @@ class Runner():
                 if name.split('(')[0] in BuiltinsFunctoins:
                     _1: tuple[int | str | Any | None, Int | Str | Nonetype, bool] = Functions.FunctionsLogic(self, v, number, path if not path is None else '<String>', name) # type: ignore
 
-                    v = _1[0]
-                    type_ = _1[1]
-                    IsPrivateVariable = _1[2]
+                    v = _1[0] # type: ignore
+
+                    _2 =  Expressions.ExpressionsLogic(self, v, linetext, number, path) # type: ignore
+
+                    v = _2[0]
+                    type_ = _2[1]
+                    IsPrivateVariable = _2[2] # type: ignore
 
                 try:
                     exec(f'{name} = \'\'')
@@ -482,9 +490,9 @@ class Runner():
 
                 v = _2[0]
                 type_ = _2[1]
-                IsPrivateVariable = _2[2]
+                IsPrivateVariable = _2[2] # type: ignore
 
-                self.environment.set_values({name : {'value' : v, 'len' : len(str(v)), 'IsPrivateVariable' : IsPrivateVariable, 'type' : type_}})
+                self.environment.set_values({name : {'value' : v, 'len' : len(str(v)), 'IsPrivateVariable' : IsPrivateVariable, 'type' : type_}}) # type: ignore
 
             elif '(' in linetext:
                 Functions.FunctionsLogic(self, linetext, number, path if not path is None else '<String>')
@@ -521,36 +529,45 @@ class Keys():
         '''
         if linetext.startswith('def_func '):
             name = linetext.split('{')[0][9:]
-            args = linetext.split('{')[1][0:-2].replace(' ', '').split(',')
+            args_ = linetext.split('{')[1][0:-2].replace(' ', '').split(',')
+
+            args = []
+
+            for arg in args_:
+                if arg == '': continue
+                args.append(arg) # type: ignore
 
             body = []
             try:
-                exec(f'def {name}({','.join(args)}):pass')
+                exec(f'def {name}({','.join(args)}):pass') # type: ignore
             except Exception as e:
-                clsobj.raiser('SyntaxError', 'Syntax Error', number, linetext, path if not path is None else '<String>', e, clsobj.config)
+                clsobj.raiser('SyntaxError', 'Syntax Error', number, linetext, path if not path is None else '<String>', e, clsobj.config) # type: ignore
         
             i = number
 
             while 1:
+                if i >= len(alltexts):
+                    root.raiser('SyntaxError', 'Syntax Error', number, linetext, path if not path is None else '<String>', config=clsobj.config) # type: ignore
+
                 lt = alltexts[i]
 
                 if lt.startswith('END'):
                     if lt == f'END {linetext}':
                         break
 
-                body.append(lt[4:])
+                body.append(lt[4:]) # type: ignore
 
                 i += 1
             
-            clsobj.environment.set_values(
+            clsobj.environment.set_values( # type: ignore
                 {
                     name : 
                     {
                         'value': 
                             Function(
-                                name, args, body, False, number, linetext
+                                name, args, body, False, number, linetext # type: ignore
                             ),
-                        'len' : len(body),
+                        'len' : len(body), # type: ignore
                         'type' : 'function'
                     }
                 }
@@ -564,42 +581,44 @@ class Keys():
             args = {}
 
             for arg in args_:
-                if arg in clsobj.environment.values:
-                    args.update({arg : clsobj.environment.values[arg]['value']})
+                if arg in clsobj.environment.values: # type: ignore
+                    args.update({arg : clsobj.environment.values[arg]['value']}) # type: ignore
                 else:
-                    clsobj.raiser('NameError', 'Name Error', number, linetext, path if not path is None else '<String>', config=clsobj.config)
+                    clsobj.raiser('NameError', 'Name Error', number, linetext, path if not path is None else '<String>', config=clsobj.config) # type: ignore
 
             body = []
             try:
-                exec(f'def test({','.join(args)}):pass')
+                exec(f'def test({','.join(args)}):pass') # type: ignore
             except Exception as e:
-                clsobj.raiser('SyntaxError', 'Syntax Error', number, linetext, path if not path is None else '<String>', e, clsobj.config)
+                clsobj.raiser('SyntaxError', 'Syntax Error', number, linetext, path if not path is None else '<String>', e, clsobj.config) # type: ignore
             
             i = number
 
             while 1:
+                if i >= len(alltexts):
+                    root.raiser('SyntaxError', 'Syntax Error', number, linetext, path if not path is None else '<String>', config=clsobj.config) # type: ignore
+
                 lt = alltexts[i]
 
                 if lt.startswith('END'):
                     if lt == f'END {linetext}':
                         break
 
-                body.append(lt[4:])
+                body.append(lt[4:]) # type: ignore
 
                 i += 1
 
-            
             try:
-                exec('\n'.join(body), args)
+                exec('\n'.join(body), args) # type: ignore
             except Exception as e:
-                clsobj.raiser(e.__class__.__name__, str(e), number, linetext, path if not path is None else '<String>', e, clsobj.config)
+                clsobj.raiser(e.__class__.__name__, str(e), number, linetext, path if not path is None else '<String>', e, clsobj.config) # type: ignore
 
         elif linetext.startswith('if '):
             expr = linetext.split('{')[1][:-2]
 
             value = Expressions.ExpressionsLogic(clsobj, expr, linetext, number, path)
 
-            if not isinstance(value, bool):
+            if not isinstance(value, bool): # type: ignore
                 value = boolean(value)
 
             if value:
@@ -608,20 +627,55 @@ class Keys():
                 body = []
 
                 while 1:
+                    if i >= len(alltexts):
+                        root.raiser('SyntaxError', 'Syntax Error', number, linetext, path if not path is None else '<String>', config=clsobj.config) # type: ignore
+
                     lt = alltexts[i]
+
                     if lt.startswith('END '):
                         if lt == f'END {linetext}':
                             break
 
-                    body.append(lt[4:])
+                    body.append(lt[4:]) # type: ignore
 
                     i += 1
 
                 runner = Runner(linetext, config=clsobj.config, function=True)
-                runner.environment.set_values(clsobj.environment.values)
+                runner.environment.set_values(clsobj.environment.values) # type: ignore
 
-                runner.run_fortexts('\n'.join(body), path)
+                runner.run_fortexts('\n'.join(body), path) # type: ignore
 
+                clsobj.environment.set_values(runner.environment.values) # type: ignore
+            
+        elif linetext.startswith('while '):
+            expr = linetext.split('{')[1][:-2]
+
+            i = number
+
+            body = []
+
+            while 1:
+                if i >= len(alltexts):
+                    root.raiser('SyntaxError', 'Syntax Error', number, linetext, path if not path is None else '<String>', config=clsobj.config) # type: ignore
+
+                lt = alltexts[i]
+
+                if lt.startswith('END '):
+                    if lt == f'END {linetext}':
+                        break
+
+                body.append(lt[4:]) # type: ignore
+
+                i += 1
+
+            runner = Runner(linetext, config=clsobj.config, function=True)
+            runner.environment.set_values(clsobj.environment.values) # type: ignore
+
+            while boolean(Expressions.ExpressionsLogic(clsobj, expr, linetext, number, path)):
+
+                runner.run_fortexts('\n'.join(body), path) # type: ignore
+
+                clsobj.environment.set_values(runner.environment.values) # type: ignore
 
 class Expressions():
     '''
@@ -642,7 +696,7 @@ class Expressions():
         :return: None 表示报错
         '''
 
-        _ = clsobj.environment.values
+        _ = clsobj.environment.values # type: ignore
 
         v_: list[str] = []
 
@@ -679,7 +733,7 @@ class Expressions():
                         'Syntax Error', 
                         number, 
                         linetext, 
-                        path if not path is None else '<String>', 
+                        path if not path is None else '<String>',  # type: ignore
                         config=clsobj.config
                     )
                 else:
@@ -693,9 +747,9 @@ class Expressions():
         value = ''.join(v_)
 
         try:
-            a = eval(value, globals=_)
+            a = eval(value, globals=_) # type: ignore
         except Exception as e:
-            root.raiser(e.__class__.__name__, str(e), number, linetext, path if not path is None else '<String>', e, clsobj.config)
+            root.raiser(e.__class__.__name__, str(e), number, linetext, path if not path is None else '<String>', e, clsobj.config) # type: ignore
             return
 
         if isinstance(a, str):
@@ -745,31 +799,35 @@ class Functions():
         :return: None 发生错误
         '''
         if linetext.split('(')[0].startswith('print'):
-            p = linetext[6:][:-1]
+            p: str = linetext[6:][:-1]
             
             try:
-                _ = Variable.VariableLogic(clsobj, p, number, linetext, path if not path is None else '<String>')
+                _ = Variable.VariableLogic(clsobj, p, number, linetext, path if not path is None else '<String>') # type: ignore
                 p = _[0] # type: ignore
+                p = \
+                    Expressions.ExpressionsLogic(clsobj, p, linetext, number, path)[0] # type: ignore
             except Exception as e:
                 if not p == '':
-                    root.raiser('NameError', 'Name is not defined', number, linetext, path if not path is None else '<String>', e, root.config)
+                    root.raiser('NameError', 'Name is not defined', number, linetext, path if not path is None else '<String>', e, root.config) # type: ignore
                     return
 
-            print(p)
+            print(p) # type: ignore
             v = None
         
         elif linetext.split('(')[0].startswith('input'):
             p = linetext[6:][:-1]
 
             try:
-                _ = Variable.VariableLogic(clsobj, p, number, linetext, path if not path is None else '<String>')
+                _ = Variable.VariableLogic(clsobj, p, number, linetext, path if not path is None else '<String>') # type: ignore
                 p = _[0] # type: ignore
+                p = \
+                    Expressions.ExpressionsLogic(clsobj, p, linetext, number, path)[0] # type: ignore
             except Exception as e:
                 if not p == '':
-                    root.raiser('NameError', 'Name is not defined', number, linetext, path if not path is None else '<String>', e, root.config)
+                    root.raiser('NameError', 'Name is not defined', number, linetext, path if not path is None else '<String>', e, root.config) # type: ignore
                     return
 
-            v = input(p)
+            v = input(p) # type: ignore
 
         elif linetext.split('(')[0].startswith('import'):
             p = linetext[7:][:-1]
@@ -782,13 +840,13 @@ class Functions():
 
             elif p in os.listdir(PackagesFolderPath):
                 if p in NowImport:
-                    root.raiser('LoopImportError', 'Package was loop import', number, linetext, path if not path is None else '<String>', None, root.config)
+                    root.raiser('LoopImportError', 'Package was loop import', number, linetext, path if not path is None else '<String>', None, root.config) # type: ignore
                 
                 path = f'{PackagesFolderPath}/{p}' # /{p}
             
                 runner = Runner(p)
             
-                NowImport.append(p)
+                NowImport.append(p) # type: ignore
 
                 if not os.path.isfile(path):
                     for fn in os.listdir(path):
@@ -797,42 +855,42 @@ class Functions():
                             
                             runner.run_forfilepath(fp)
 
-                clsobj.environment.set_values({p : {'value' : runner.environment.values}})
+                clsobj.environment.set_values({p : {'value' : runner.environment.values}}) # type: ignore
 
                 clsobj.environment.AddImportsEnvironment(runner.EnvironmentName)
 
-                NowImport.remove(p)
+                NowImport.remove(p) # type: ignore
 
             elif f'{p}.XRthon' in os.listdir(PackagesFolderPath):
                 if f'{p}.XRthon' in NowImport:
-                    root.raiser('LoopImportError', 'Package was loop import', number, linetext, path if not path is None else '<String>', None, root.config)
+                    root.raiser('LoopImportError', 'Package was loop import', number, linetext, path if not path is None else '<String>', None, root.config) # type: ignore
                 else:
                     runner = Runner(p)
                     
                     path = f'{PackagesFolderPath}/{p}.XRthon'
 
-                    NowImport.append(f'{p}.XRthon')
+                    NowImport.append(f'{p}.XRthon') # type: ignore
 
                     runner.run_forfilepath(path)
                 
-                    clsobj.environment.set_values({p : {'value' : runner.environment.values}})
+                    clsobj.environment.set_values({p : {'value' : runner.environment.values}}) # type: ignore
                 
                     clsobj.environment.AddImportsEnvironment(runner.EnvironmentName)
 
-                    NowImport.remove(f'{p}.XRthon')
+                    NowImport.remove(f'{p}.XRthon') # type: ignore
 
             elif p in BuiltinsPackages:
                 if p == 'os':
-                    clsobj.environment.set_values({'os' : {'value' : {
+                    clsobj.environment.set_values({'os' : {'value' : { # type: ignore
                         'environ' : os.environ,
                         'name' : os.name,
                     }}})
                 elif p == 'sys':
-                    clsobj.environment.set_values({'sys' : {'value' : {
+                    clsobj.environment.set_values({'sys' : {'value' : { # type: ignore
                         'version' : version
                     }}})
                 elif p == 'XRthon':
-                    clsobj.environment.set_values({'XRthon' : {'value' : {
+                    clsobj.environment.set_values({'XRthon' : {'value' : { # type: ignore
                         'version' : version,
                         
                     }}})
@@ -843,10 +901,10 @@ class Functions():
                     pass
                 
             elif p in Environments.keys():
-                clsobj.environment.set_values({p : {'value' : Environments[p].values}})
+                clsobj.environment.set_values({p : {'value' : Environments[p].values}}) # type: ignore
             
             else:
-                root.raiser('NameError', 'Name is not defined', number, linetext, path if not path is None else '<String>', config=root.config)
+                root.raiser('NameError', 'Name is not defined', number, linetext, path if not path is None else '<String>', config=root.config) # type: ignore
                 return
 
             v = 'None'
@@ -854,19 +912,19 @@ class Functions():
         elif linetext.split('(')[0].startswith('quit'):
             # name = linetext[4:][:-1]
 
-            root.raiser('SystemExit', '', number, linetext, path if not path is None else '<String>', config=root.config)
+            root.raiser('SystemExit', '', number, linetext, path if not path is None else '<String>', config=root.config) # type: ignore
 
             pass
 
         elif linetext.split('(')[0].startswith('type'):
             pass
 
-        elif linetext.split('(')[0] in clsobj.environment.values.keys():
+        elif linetext.split('(')[0] in clsobj.environment.values.keys(): # type: ignore
             # type: ignore
             name = linetext.split('(')[0]
-            _= clsobj.environment.values[name]
+            _= clsobj.environment.values[name] # type: ignore
             func: Function = _['value'] # type: ignore
-            if not isinstance(func, Function):
+            if not isinstance(func, Function): # type: ignore
                 clsobj.raiser('TypeError', f'The name \'{func}\' is not a function', number, linetext, path if not path is None else '<String>', config=root.config)
 
             args_: list[str] = linetext.split('(')[1][:-1].replace(' ', '').split(',')
@@ -876,13 +934,15 @@ class Functions():
             args = []
 
             for arg in args_:
-                tle = Variable.VariableLogic(clsobj, arg, number, linetext, path if not path is None else '<String>')
+                tle = Variable.VariableLogic(clsobj, arg, number, linetext, path if not path is None else '<String>') # type: ignore
 
                 arg = tle[0] # type: ignore
 
-                args.append(arg)
+                arg =  Expressions.ExpressionsLogic(clsobj, arg, linetext, number, path) # type: ignore
 
-            func.run(args)
+                args.append(arg) # type: ignore
+
+            func.run(args) # type: ignore
 
             v = 'None'
 
@@ -892,7 +952,7 @@ class Functions():
             if '.' in linetext.split('(')[0]:
                 if linetext.startswith(' '):
                     return
-                _ = Variable.VariableLogic(clsobj, linetext.split('(')[0], number, linetext, path if not path is None else '<String>')
+                _ = Variable.VariableLogic(clsobj, linetext.split('(')[0], number, linetext, path if not path is None else '<String>') # type: ignore
                 if _[1] == 'function': # type: ignore
                     args_ = linetext.split('(')[1][:-1].replace(' ', '').split(',')
                     if args_ == ['']:
@@ -901,18 +961,21 @@ class Functions():
                     args = []
 
                     for arg in args_:
-                        tle = Variable.VariableLogic(clsobj, arg, number, linetext, path if not path is None else '<String>')
+                        tle = Variable.VariableLogic(clsobj, arg, number, linetext, path if not path is None else '<String>') # type: ignore
 
-                        arg = tle[0] # type: ignore
+                        arg: str = tle[0] # type: ignore
 
-                        args.append(arg)
+                        arg =  \
+                            Expressions.ExpressionsLogic(clsobj, arg, linetext, number, path)[0] # type: ignore
+                        
+                        args.append(arg) # type: ignore
 
                     func: Function = _[0] # type: ignore
 
                     func.run(args) # type: ignore
             v = 'None'
 
-        v = f'\'{v}\''.replace('\\', '\\\\')
+        v = f'\'{v}\''.replace('\\', '\\\\') # type: ignore
 
         type_ = Str(v)
 
@@ -925,7 +988,7 @@ class Functions():
                             f'The name ({v}) is not defined',
                             number,
                             linetext,
-                            path if not path is None else '<String>',
+                            path if not path is None else '<String>', # type: ignore
                             e,
                             root.config
                         )
@@ -935,7 +998,7 @@ class Functions():
                             'SyntaxError',
                             'Invalid syntax',
                             number,
-                            linetext, path if not path is None else '<String>',
+                            linetext, path if not path is None else '<String>', # type: ignore
                             e,
                             root.config
                         )
@@ -957,7 +1020,7 @@ class Functions():
                                 'Invalid syntax',
                                 number,
                                 linetext,
-                                path if not path is None else '<String>',
+                                path if not path is None else '<String>', # type: ignore
                                 SyntaxError('invalid syntax'),
                                 root.config
                             )
@@ -968,7 +1031,7 @@ class Functions():
                             'Invalid syntax',
                             number,
                             linetext,
-                            path if not path is None else '<String>',
+                            path if not path is None else '<String>', # type: ignore
                             e,
                             root.config
                         )
@@ -995,7 +1058,7 @@ class Variable():
     变量实现
     '''
     @staticmethod
-    def VariableLogic(clsobj: Runner, value: object, number: int, linetext: str, path: str) -> tuple | None:
+    def VariableLogic(clsobj: Runner, value: object, number: int, linetext: str, path: str) -> tuple | None: # type: ignore
         '''
         变量逻辑
 
@@ -1010,7 +1073,7 @@ class Variable():
         '''
         type_ = None # type: ignore
         
-        def _a(value: str):
+        def _a(value: str): # type: ignore
             if (value.startswith('"') and value.endswith('"')) \
                or (value.startswith('\'') and value.endswith('\'')):
                 value = value[1:-1]
@@ -1018,24 +1081,18 @@ class Variable():
 
             else:
                 try:
-                    value = '' if value == '' else eval(value) \
-                        if value not in clsobj.environment.values.keys() else \
-                            clsobj.environment.values[value]['value'] # type: ignore
+                    value = '' if value == '' else eval(value) if value not in clsobj.environment.values.keys() else clsobj.environment.values[value]['value'] # type: ignore
 
                     t = type(value)
 
-                    type_: Int | Float | Str | Nonetype | Object  = Int(value, number, linetext, path) if t == int \
-                                else Float(value, number, linetext, path) if t == float \
-                                else Str(value) if t == str \
-                                else Nonetype(None) if t == NoneType \
-                                else Object(value)
+                    type_: Int | Float | Str | Nonetype | Object  = Int(value, number, linetext, path) if t == int else Float(value, number, linetext, path) if t == float else Str(value) if t == str else Nonetype(None) if t == NoneType else Object(value) # type: ignore
                 except Exception as e:
                     root.raiser(
                                 'SyntaxError',
                                 'Invalid syntax',
                                 number,
                                 linetext,
-                                path if not path is None else '<String>',
+                                path if not path is None else '<String>', # type: ignore
                                 e,
                                 root.config
                             )
@@ -1056,29 +1113,29 @@ class Variable():
                 # 获取环境中的对象
                 if name not in clsobj.environment.values.keys(): # type: ignore
                     value, type_, IsPrivateVariable = _a(value) # type: ignore
-                    return (value, type_, IsPrivateVariable)
-                obj = clsobj.environment.values[name]['value']
+                    return (value, type_, IsPrivateVariable) # type: ignore
+                obj = clsobj.environment.values[name]['value'] # type: ignore
                 
                 # 逐层获取属性或方法
-                attr = obj
+                attr = obj # type: ignore
                 for part in attr_path.split('.'):
                     _ = attr[part] # type: ignore
-                    type_ = _['type'] if isinstance(_, dict) and ('type' in _) else Nonetype(None)
-                    attr = _['value'] if isinstance(_, dict) else _
+                    type_ = _['type'] if isinstance(_, dict) and ('type' in _) else Nonetype(None) # type: ignore
+                    attr = _['value'] if isinstance(_, dict) else _ # type: ignore
                 
                 # 执行属性或方法
                 # if callable(attr):
                 #     result = attr()
                 # else:
-                result = attr['value'] if isinstance(attr, dict) and 'value' in attr else attr
+                result = attr['value'] if isinstance(attr, dict) and 'value' in attr else attr # type: ignore
                 # type_ = attr['type']
                 
 
-                return (result, type_, False)
+                return (result, type_, False) # type: ignore
         else:
             value, type_, IsPrivateVariable = _a(value) # type: ignore
         
-        return (value, type_, IsPrivateVariable)
+        return (value, type_, IsPrivateVariable) # type: ignore
 
 root = Runner('root')
 

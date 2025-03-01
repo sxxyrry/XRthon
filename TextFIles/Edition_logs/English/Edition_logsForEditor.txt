@@ -32,3 +32,10 @@ B--0--0.1--_indev--2025*2*3 Version:
     Added XRgame library
 B--0--0.1--_indev--2025*2*4 Version:
     Not had
+B--0--0.1--_indev--2025*2*5 Version:
+    Plugin major updated (BREAKING CHANGE)
+    Added Notice
+    Added detection to see if it can connect to the database
+    Added plugin development documentation (incomplete)
+    Added Start Screen
+    Added in app icons

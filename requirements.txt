@@ -1,6 +1,0 @@
-colorama==0.4.6
-ghapi==1.0.6
-py7zr==0.22.0
-PyYAML==6.0.2
-tkintertools==3.0.0
-pygame==2.6.1

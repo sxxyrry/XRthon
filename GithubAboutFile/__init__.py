@@ -7,7 +7,7 @@ from .DirExists import DirExists
 from .DownloadDir import DownloadDir
 from .DownloadFile import DownloadFile
 from .FileExists import FileExists
-from .GetFileAndDirsNameList import GetFileAndDirsNameList
+from .ListDir import ListDir
 from .GetFileText import GetFileText
 from .UploadFile import UploadFile
 
@@ -22,7 +22,7 @@ __all__: list[str] = [
                       'DownloadDir',
                       'DownloadFile',
                       'FileExists',
-                      'GetFileAndDirsNameList',
+                      'ListDir',
                       'GetFileText',
                       'UploadFile',
                      ]

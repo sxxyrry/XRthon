@@ -4,11 +4,11 @@ import tkinter as tk
 
 
 class IndexText(color.XRColorText):
-    def __init__(self, parent, *args, **kwargs):
-        super().__init__(parent, *args, **kwargs)
+    def __init__(self, parent: tk.Frame | tk.Toplevel, *args, **kwargs): # type: ignore
+        super().__init__(parent, *args, **kwargs) # type: ignore
         self.i = 0
         self.bind("<Return>", lambda event: self.enter())
-        self.bind("<Key>", lambda event: self.character_completion(event))
+        self.bind("<Key>", lambda event: self.character_completion(event)) # type: ignore
         self.bind("<BackSpace>", lambda event: self.backspace())
         self.bind("<Tab>", lambda event: self.tab())
         self.bind('<Shift-Tab>', lambda event: self.untab())
@@ -84,8 +84,8 @@ class IndexText(color.XRColorText):
                 self.delete(all_insert1, 'insert')
                 return 'break'
 
-    def character_completion(self, event):  # 字符补全（对【(】、【[】、【{】等进行自动补全）
-        a = event.keysym
+    def character_completion(self, event):  # type: ignore # 字符补全（对【(】、【[】、【{】等进行自动补全）
+        a = event.keysym # type: ignore
         if a == 'parenleft':  # (
             self.insert("insert", ')')
             last = str(int(''.join(list(self.index('insert'))[
@@ -163,6 +163,6 @@ class IndexText(color.XRColorText):
 
 if __name__ == "__main__":
     root = tk.Tk()
-    text = IndexText(root, font=("黑体", 30))
+    text = IndexText(root, font=("黑体", 30)) # type: ignore
     text.pack()
     root.mainloop()

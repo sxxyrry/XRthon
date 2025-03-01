@@ -69,21 +69,21 @@ def main():
                     
                     try:
                         # 获取环境中的对象
-                        obj = runner.environment.values[name]['value']
+                        obj = runner.environment.values[name]['value'] # type: ignore
                         
                         # 逐层获取属性或方法
-                        attr = obj
+                        attr = obj # type: ignore
                         for part in attr_path.split('.'):
-                            _ = attr[part]
-                            attr = _['value'] if isinstance(_, dict) else _
+                            _ = attr[part] # type: ignore
+                            attr = _['value'] if isinstance(_, dict) else _ # type: ignore
                         
                         # 执行属性或方法
                         # if callable(attr):
                         #     result = attr()
                         # else:
-                        result = attr['value'] if isinstance(attr, dict) and 'value' in attr else attr
+                        result = attr['value'] if isinstance(attr, dict) and 'value' in attr else attr # type: ignore
                         
-                        print(result)
+                        print(result) # type: ignore
                     except Exception as e:
                         runner.raiser(f'{e.__class__.__name__}', f'{e}', 1, command, '<String>', e, runner.config)
             elif command == 'help()':
@@ -117,8 +117,8 @@ END if {1}:
 '''
                 print(text)
             else:
-                if command in runner.environment.values.keys():
-                    print(runner.environment.values[command]['value'])
+                if command in runner.environment.values.keys(): # type: ignore
+                    print(runner.environment.values[command]['value']) # type: ignore
                 else:
                     runner.run_forlinetext(command, [command], None, 1)
         except KeyboardInterrupt as e:

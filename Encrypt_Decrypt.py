@@ -1,6 +1,6 @@
 class NotSpecifiedFormatString(BaseException):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, *args, **kwargs): # type: ignore
+        super().__init__(*args, **kwargs) # type: ignore
 
 def sumForText(string: str):
     _ = 0

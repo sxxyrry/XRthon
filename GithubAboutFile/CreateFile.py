@@ -1,8 +1,8 @@
 import base64
-import ghapi.all as ghapi
+import ghapi.all as ghapi # type: ignore
 
 
-def CreateFile(access_token, owner, repo, file_path, commit_message, content):
+def CreateFile(access_token: str, owner: str, repo: str, file_path: str, commit_message: str, content: str) -> None:
     """
     在 GitHub 仓库中创建文件。
     
@@ -23,12 +23,12 @@ def CreateFile(access_token, owner, repo, file_path, commit_message, content):
     commits = api.get_commits() # type: ignore
 
     # 获取最新提交的 SHA 值
-    latest_commit_sha = commits[0]['sha']
+    latest_commit_sha = commits[0]['sha'] # type: ignore
 
     try:
         current_file = api.get_file(file_path, latest_commit_sha) # type: ignore
-        sha = current_file.sha
-    except Exception as e:
+        sha = current_file.sha # type: ignore
+    except Exception:
         sha = None
     
     response = api.update_file( # type: ignore
@@ -37,5 +37,3 @@ def CreateFile(access_token, owner, repo, file_path, commit_message, content):
         content=encoded_content,
         sha=sha
     )
-
-    return response

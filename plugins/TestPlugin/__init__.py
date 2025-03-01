@@ -1,8 +1,8 @@
 from ...PluginAPI import (
-    root,
-    parent,
+    root, # type: ignore
+    parent, # type: ignore
     Up,
-    Bottom,
+    Bottom, # type: ignore
     tk,
     tkt
 )

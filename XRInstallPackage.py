@@ -1,8 +1,7 @@
 from GithubAboutFile import *
-from Encrypt_Decrypt import decrypt
 from BaseGConfig import *
 # from DecodeAndInstallPackage import DecodeAndInstallPackage
-from colorama import init, Fore, Style, Back
+from colorama import init, Fore, Style
 from folder import folder
 import os, shutil
 
@@ -28,7 +27,7 @@ class Installer():
         pass
 
     def install(self, name: str):
-        filelist = GetFileAndDirsNameList(token, username, repo_name, '/packages')
+        filelist = ListDir(token, username, repo_name, '/packages')
         if name in filelist:
             if name in os.listdir(packages_path):
                 print(f'{Fore.YELLOW}Warning: Package "{name}" already exists.{Style.RESET_ALL}')
@@ -51,7 +50,7 @@ class Installer():
             print(f'{Fore.RED}Error: Package "{name}" not found.{Style.RESET_ALL}')
 
     def uninstall(self, name: str):
-        filelist = GetFileAndDirsNameList(token, username, repo_name, '/packages')
+        filelist = ListDir(token, username, repo_name, '/packages')
         if name in filelist:
             if name in os.listdir(packages_path):
                 shutil.rmtree(os.path.join(packages_path, name))
