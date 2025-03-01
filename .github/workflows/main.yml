@@ -15,27 +15,27 @@
 
     module: # optional
     # Enable standalone mode for output. This allows you to transfer the created binary
-to other machines without it using an existing Python installation. This also
-means it will become big. It implies these option: "--follow-imports" and
-"--python-flag=no_site". Defaults to off.
+    # to other machines without it using an existing Python installation. This also
+    #cmeans it will become big. It implies these option: "--follow-imports" and
+    # "--python-flag=no_site". Defaults to off.
 
     standalone: # optional
     # On top of standalone mode, enable onefile mode. This means not a folder,
-but a compressed executable is created and used. Defaults to off.
+    # but a compressed executable is created and used. Defaults to off.
 
     onefile: # optional, default is true
     # Python flags to use. Default is what you are using to run Nuitka, this
-enforces a specific mode. These are options that also exist to standard
-Python executable. Currently supported: "-S" (alias "no_site"),
-"static_hashes" (do not use hash randomization), "no_warnings" (do not
-give Python run time warnings), "-O" (alias "no_asserts"), "no_docstrings"
-(do not use doc strings), "-u" (alias "unbuffered"), "isolated" (do not
-load outside code) and "-m" (package mode, compile as "package.__main__").
-Default empty.
+    # enforces a specific mode. These are options that also exist to standard
+    # Python executable. Currently supported: "-S" (alias "no_site"),
+    # "static_hashes" (do not use hash randomization), "no_warnings" (do not
+    # give Python run time warnings), "-O" (alias "no_asserts"), "no_docstrings"
+    # (do not use doc strings), "-u" (alias "unbuffered"), "isolated" (do not
+    # load outside code) and "-m" (package mode, compile as "package.__main__").
+    # Default empty.
 
     python-flag: # optional
     # Use debug version or not. Default uses what you are using to run Nuitka, most
-likely a non-debug version. Only for debugging and testing purposes.
+    # likely a non-debug version. Only for debugging and testing purposes.
 
     python-debug: # optional
     # Displays the detailed C compilation info from Scons during build process (useful for debugging purposes)
@@ -47,45 +47,19 @@ likely a non-debug version. Only for debugging and testing purposes.
     # A comma separated list of Qt plugins to not included, to take away from default.
     noinclude-qt-plugins: # optional
     # Include data files for the given package name. DLLs and extension modules
-are not data files and never included like this. Can use patterns the
-filenames as indicated below. Data files of packages are not included
-by default, but package configuration can do it.
-This will only include non-DLL, non-extension modules, i.e. actual data
-files. After a ":" optionally a filename pattern can be given as
-well, selecting only matching files. Examples:
-"--include-package-data=package_name" (all files)
-"--include-package-data=package_name=*.txt" (only certain type)
-"--include-package-data=package_name=some_filename.dat (concrete file)
-Default empty.
 
     include-package-data: # optional
     # Include data files by filenames in the distribution. There are many
-allowed forms. With '--include-data-files=/path/to/file/*.txt=folder_name/some.txt' it
-will copy a single file and complain if it's multiple. With
-'--include-data-files=/path/to/files/*.txt=folder_name/' it will put
-all matching files into that folder. For recursive copy there is a
-form with 3 values that '--include-data-files=/path/to/scan=folder_name=**/*.txt'
-that will preserve directory structure. Default empty.
 
     include-data-files: # optional
     # Include data files from complete directory in the distribution. This is
-recursive. Check '--include-data-files' with patterns if you want non-recursive
-inclusion. An example would be '--include-data-dir=/path/some_dir=data/some_dir'
-for plain copy, of the whole directory. All files are copied, if you want to
-exclude files you need to remove them beforehand, or use '--noinclude-data-files'
-option to remove them. Default empty.
 
     include-data-dir: # optional
     # Do not include data files matching the filename pattern given. This is against
-the target filename, not source paths. So to ignore a file pattern from package
-data for 'package_name' should be matched as 'package_name/*.txt'. Or for the
-whole directory simply use 'package_name'. Default empty.
+
 
     noinclude-data-files: # optional
     # Include the specified data file patterns outside of the onefile binary,
-rather than on the inside. Makes only sense in case of '--onefile'
-compilation. First files have to be specified as included somehow,
-then this refers to target paths. Default empty.
 
     include-onefile-external-data: # optional
     # Include a whole package. Give as a Python namespace, e.g. "some_package.sub_package" and Nuitka will then find it and include it and all the modules found below that disk location in the binary or extension module it creates, and make it available for import by the code. To avoid unwanted sub packages, e.g. tests you can e.g. do this "--nofollow-import-to=*.tests". Default empty.
@@ -115,14 +89,11 @@ then this refers to target paths. Default empty.
 
     warn-unusual-code: # optional
     # Allow Nuitka to download external code if necessary, e.g. dependency
-walker, ccache, and even gcc on Windows. To disable, redirect input
-from nul device, e.g. "</dev/null" or "<NUL:". Default is to prompt.
+
 
     assume-yes-for-downloads: # optional, default is true
     # Disable warning for a given mnemonic. These are given to make sure you are aware of
-certain topics, and typically point to the Nuitka website. The mnemonic is the part
-of the URL at the end, without the HTML suffix. Can be given multiple times and
-accepts shell pattern. Default empty.
+
 
     nowarn-mnemonic: # optional
     # Disables debugging helpers, that will help with runtime issues. Only enable when you find no more issues.
