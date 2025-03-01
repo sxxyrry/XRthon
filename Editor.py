@@ -243,7 +243,6 @@ class Editor():
         self.Up.add_cascade(label=self.texts[12], menu=self.Plugin_menu)
         # self.Up.add_command(label="Edition Logs", command=self.EditionLogsInterface)
         self.Up.add_cascade(label=self.texts[13], menu=self.EditionLogs_menu)
-        self.Up.add_command(label=self.texts[40], command=lambda :messagebox.showinfo(self.texts[40], self.texts[41])) # type: ignore
         if self.config.Mod == 'DEV':
             self.Up.add_command(label="Restart", command=self.Restart)
             # self.Up.add_command(label="Toggle Theme", command=self.toggle_theme)

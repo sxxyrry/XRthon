@@ -39,3 +39,4 @@ B--0--0.1--_indev--2025*2*5 Version:
     Added plugin development documentation (incomplete)
     Added Start Screen
     Added in app icons
+    Deleted Help
